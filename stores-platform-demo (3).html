@@ -1,0 +1,1746 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دفتر الطلبات — نموذج عرض</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1ef; --surface:#ffffff; --sunk:#f5f7f6; --line:#dde3e0; --line-strong:#c5cdc9;
+  --ink:#14211f; --muted:#5d6b67; --faint:#8a9692;
+  --brand:#1f6b4f;
+  --brand-soft:color-mix(in srgb, var(--brand) 12%, var(--surface));
+  --brand-ink:#ffffff;
+  --new:#1d4ed8; --confirmed:#7c3aed; --preparing:#b45309; --shipped:#0e7490; --delivered:#15803d; --canceled:#6b7280; --returned:#b91c1c;
+  --bad:#b91c1c; --good:#15803d; --warn:#b45309;
+  --r-lg:20px; --r-md:12px; --r-sm:8px;
+  --nav-h:64px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1716; --surface:#172220; --sunk:#121b1a; --line:#26332f; --line-strong:#33433e;
+    --ink:#e7eeeb; --muted:#9fb0ab; --faint:#74857f;
+    --new:#7aa2ff; --confirmed:#b69bff; --preparing:#f2b25c; --shipped:#5cc8dc; --delivered:#5fd18a; --canceled:#9aa3ad; --returned:#ff8a8a;
+    --bad:#ff8a8a; --good:#5fd18a; --warn:#f2b25c;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1716; --surface:#172220; --sunk:#121b1a; --line:#26332f; --line-strong:#33433e;
+  --ink:#e7eeeb; --muted:#9fb0ab; --faint:#74857f;
+  --new:#7aa2ff; --confirmed:#b69bff; --preparing:#f2b25c; --shipped:#5cc8dc; --delivered:#5fd18a; --canceled:#9aa3ad; --returned:#ff8a8a;
+  --bad:#ff8a8a; --good:#5fd18a; --warn:#f2b25c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Readex Pro", system-ui, sans-serif; font-size:15px; line-height:1.55;
+  font-variant-numeric: tabular-nums;
+  -webkit-tap-highlight-color: transparent;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+a{color:var(--brand)}
+.num{font-variant-numeric:tabular-nums; direction:ltr; unicode-bidi:isolate; display:inline-block}
+
+/* Demo notice */
+.demo-bar{background:var(--ink);color:var(--bg);font-size:12.5px;padding:7px 16px;text-align:center}
+.demo-bar button{background:none;border:0;color:inherit;text-decoration:underline;padding:0 4px}
+
+/* Header */
+header.top{
+  position:sticky;top:0;z-index:20;background:var(--surface);
+  border-bottom:1px solid var(--line);
+  padding:10px 16px;display:flex;align-items:center;gap:10px;
+}
+.store-mark{width:38px;height:38px;border-radius:11px;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:700;font-size:17px;flex:none}
+.store-pick{flex:1;min-width:0}
+.store-pick select{border:0;background:none;font-weight:600;font-size:16px;padding:0;max-width:100%;appearance:none;-webkit-appearance:none}
+.store-pick small{display:block;color:var(--muted);font-size:12px;margin-top:-2px}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;flex:none}
+.icon-btn svg{width:20px;height:20px}
+.role-pick{border:1px solid var(--line);background:var(--sunk);border-radius:10px;padding:6px 8px;font-size:13px}
+
+/* Layout */
+.shell{display:flex;min-height:calc(100vh - 100px)}
+main{flex:1;min-width:0;padding:16px 16px calc(var(--nav-h) + 28px);max-width:860px;margin:0 auto;width:100%}
+nav.side{display:none}
+nav.bottom{
+  position:fixed;bottom:0;inset-inline:0;z-index:20;height:calc(var(--nav-h) + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom);
+  background:var(--surface);border-top:1px solid var(--line);display:flex;
+}
+nav.bottom button{flex:1;border:0;background:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;color:var(--muted)}
+nav.bottom button svg{width:22px;height:22px}
+nav.bottom button[aria-current="page"]{color:var(--brand);font-weight:600}
+@media (min-width:920px){
+  nav.bottom{display:none}
+  nav.side{display:flex;flex-direction:column;gap:2px;width:220px;flex:none;padding:16px 12px;border-inline-start:0;border-inline-end:1px solid var(--line);background:var(--surface);position:sticky;top:59px;height:calc(100vh - 59px)}
+  nav.side button{display:flex;align-items:center;gap:10px;border:0;background:none;padding:10px 12px;border-radius:10px;color:var(--muted);text-align:start}
+  nav.side button svg{width:20px;height:20px}
+  nav.side button[aria-current="page"]{background:var(--brand-soft);color:var(--brand);font-weight:600}
+  main{padding:24px 28px 40px}
+}
+
+h1{font-size:22px;font-weight:600;margin:4px 0 14px;letter-spacing:-.2px}
+h2{font-size:16px;font-weight:600;margin:24px 0 10px}
+.sub{color:var(--muted);font-size:13px}
+.row{display:flex;align-items:center;gap:10px}
+.spread{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.grow{flex:1;min-width:0}
+.trunc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Order pipeline — the signature element */
+.pipeline{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:18px 14px 14px;overflow-x:auto}
+.pipe-track{display:grid;grid-template-columns:repeat(5,minmax(64px,1fr));position:relative;min-width:340px}
+.pipe-track::before{content:"";position:absolute;top:21px;inset-inline:10%;height:2px;background:var(--line-strong)}
+.stop{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;padding:0}
+.stop .dot{width:44px;height:44px;border-radius:50%;background:var(--surface);border:2px solid var(--c);color:var(--c);display:grid;place-items:center;font-weight:700;font-size:17px;position:relative}
+.stop.hot .dot{background:var(--c);color:#fff}
+.stop span{font-size:12px;color:var(--muted)}
+.pipe-foot{display:flex;gap:16px;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px;color:var(--muted);flex-wrap:wrap}
+.pipe-foot b{color:var(--ink);font-weight:600}
+
+/* Money strip */
+.money{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;margin-top:14px}
+@media (min-width:640px){.money{grid-template-columns:repeat(4,1fr)}}
+.money div{background:var(--surface);padding:12px 14px}
+.money dt{font-size:12.5px;color:var(--muted)}
+.money dd{margin:2px 0 0;font-size:18px;font-weight:600}
+.money .cod dd{color:var(--shipped)}
+.money .neg dd{color:var(--bad)}
+
+/* Lists */
+.list{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:0;border-bottom:1px solid var(--line);background:none;width:100%;text-align:start}
+.item:last-child{border-bottom:0}
+button.item:hover{background:var(--sunk)}
+.item .meta{font-size:12.5px;color:var(--muted)}
+.ono{font-weight:600;color:var(--muted);font-size:13px;min-width:44px}
+.empty{padding:28px 16px;text-align:center;color:var(--muted)}
+.empty button{margin-top:10px}
+
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:2px 9px;border-radius:999px;color:var(--c);background:color-mix(in srgb,var(--c) 13%,transparent);white-space:nowrap}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--c)}
+.tag{font-size:11.5px;padding:1px 7px;border-radius:6px;background:var(--sunk);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.tag.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 35%,transparent);background:color-mix(in srgb,var(--warn) 10%,transparent)}
+
+/* Chips */
+.chips{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;white-space:nowrap;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip b{font-weight:600;margin-inline-start:4px}
+
+/* Inputs & buttons */
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.field label{font-size:13px;color:var(--muted)}
+.input,select.input,textarea.input{width:100%;border:1px solid var(--line-strong);background:var(--surface);border-radius:10px;padding:10px 12px;min-height:44px}
+textarea.input{min-height:76px;resize:vertical}
+.input:focus{outline:2px solid var(--brand);outline-offset:-1px;border-color:transparent}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.search{position:relative;margin-bottom:10px}
+.search svg{position:absolute;inset-inline-start:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--faint)}
+.search .input{padding-inline-start:38px}
+.btn{border:1px solid var(--line-strong);background:var(--surface);border-radius:10px;padding:9px 16px;min-height:42px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.primary{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.btn.danger{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 40%,transparent)}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn svg{width:18px;height:18px}
+.fab{position:fixed;inset-inline-start:16px;bottom:calc(var(--nav-h) + 16px + env(safe-area-inset-bottom));z-index:15;border-radius:16px;box-shadow:0 6px 20px color-mix(in srgb,var(--brand) 35%,transparent)}
+@media (min-width:920px){.fab{bottom:24px}}
+.err{color:var(--bad);font-size:13px;margin:-4px 0 10px}
+
+/* Sheet */
+.scrim{position:fixed;inset:0;background:rgba(10,20,18,.45);z-index:40;display:none}
+.scrim.open{display:block}
+.sheet{
+  position:fixed;z-index:41;inset-inline:0;bottom:0;max-height:92vh;overflow-y:auto;
+  background:var(--surface);border-radius:22px 22px 0 0;padding:8px 18px calc(20px + env(safe-area-inset-bottom));
+  transform:translateY(100%);transition:transform .22s ease;
+}
+.sheet.open{transform:none}
+@media (min-width:720px){
+  .sheet{inset-inline:auto;left:50%;right:auto;bottom:auto;top:50%;width:560px;max-height:86vh;border-radius:20px;transform:translate(-50%,-46%);opacity:0;pointer-events:none;transition:opacity .16s, transform .16s}
+  .sheet.open{transform:translate(-50%,-50%);opacity:1;pointer-events:auto}
+}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--line-strong);margin:4px auto 10px}
+@media (min-width:720px){.grab{display:none}}
+.sheet-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sheet-head h3{margin:0;font-size:18px;font-weight:600;flex:1}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.actions .btn{flex:1;min-width:120px}
+
+/* Order detail */
+.cust{background:var(--sunk);border-radius:var(--r-md);padding:12px 14px;margin-bottom:12px}
+.lines{width:100%;border-collapse:collapse;font-size:14px}
+.lines td{padding:8px 0;border-bottom:1px solid var(--line)}
+.lines td:last-child{text-align:left}
+.tot{display:flex;justify-content:space-between;padding:4px 0;font-size:14px;color:var(--muted)}
+.tot.grand{color:var(--ink);font-weight:600;font-size:16px;border-top:1px solid var(--line);margin-top:6px;padding-top:10px}
+.timeline{list-style:none;padding:0;margin:8px 0 0;border-inline-start:2px solid var(--line);padding-inline-start:14px}
+.timeline li{position:relative;padding:4px 0 10px;font-size:13.5px}
+.timeline li::before{content:"";position:absolute;inset-inline-start:-20px;top:10px;width:10px;height:10px;border-radius:50%;background:var(--c);border:2px solid var(--surface)}
+.timeline small{color:var(--muted);display:block}
+
+/* Order builder lines */
+.oline{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
+.qty{display:flex;align-items:center;border:1px solid var(--line-strong);border-radius:9px;overflow:hidden}
+.qty button{width:32px;height:32px;border:0;background:var(--sunk)}
+.qty span{min-width:28px;text-align:center}
+
+/* Products */
+.thumb{width:46px;height:46px;border-radius:11px;flex:none;display:grid;place-items:center;font-weight:600;font-size:18px;color:#fff}
+.vrow{display:grid;grid-template-columns:1.4fr 1fr 1fr .8fr 28px;gap:6px;margin-bottom:6px;align-items:center}
+.vrow .input{min-height:38px;padding:7px 8px;font-size:14px}
+.vrow.head{font-size:12px;color:var(--muted)}
+.vrow .x{border:0;background:none;color:var(--faint);font-size:18px}
+
+/* Bars */
+.bars{display:flex;align-items:flex-end;gap:4px;height:110px;padding:8px 0 0}
+.bars div{flex:1;background:var(--brand);border-radius:4px 4px 0 0;min-height:2px;opacity:.85;position:relative}
+.bars div.today{opacity:1}
+.bars-x{display:flex;justify-content:space-between;font-size:11px;color:var(--faint);margin-top:4px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:14px}
+
+/* Report table */
+.ledger{width:100%;border-collapse:collapse;font-size:14.5px}
+.ledger td{padding:10px 0;border-bottom:1px solid var(--line)}
+.ledger td:last-child{text-align:left;font-weight:500}
+.ledger tr.sum td{font-weight:600;border-bottom:0;font-size:16px}
+.ledger tr.minus td:first-child::before{content:"− ";color:var(--faint)}
+.note{font-size:12.5px;color:var(--muted);margin-top:10px}
+
+/* Storefront */
+.sf{position:fixed;inset:0;z-index:30;background:var(--bg);overflow-y:auto;display:none}
+.sf.open{display:block}
+.sf-url{background:var(--ink);color:var(--bg);font-size:12.5px;padding:7px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.sf-url button{background:none;border:1px solid color-mix(in srgb,var(--bg) 40%,transparent);color:inherit;border-radius:8px;padding:3px 10px;font-size:12.5px}
+.sf-hero{background:var(--brand);color:var(--brand-ink);padding:26px 18px 30px}
+.sf-hero h2{margin:0;font-size:26px;font-weight:600}
+.sf-hero p{margin:4px 0 0;opacity:.85}
+.sf-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:16px;max-width:900px;margin:0 auto}
+@media (min-width:700px){.sf-grid{grid-template-columns:repeat(3,1fr)}}
+.sf-card{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;text-align:start;padding:0}
+.sf-card .pic{aspect-ratio:1;display:grid;place-items:center;font-size:42px;font-weight:600;color:#fff}
+.sf-card .txt{padding:10px 12px}
+.sf-card .txt div{font-weight:500}
+.sf-cart{position:fixed;bottom:16px;inset-inline:16px;max-width:520px;margin:0 auto;z-index:31}
+.sf-cart .btn{width:100%;min-height:52px;font-size:16px;border-radius:14px}
+.opts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.opt{border:1px solid var(--line-strong);background:var(--surface);border-radius:10px;padding:7px 12px;font-size:14px}
+.opt[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);font-weight:600}
+.opt:disabled{text-decoration:line-through;opacity:.5}
+
+/* Images */
+.thumb,.pic,.store-mark{overflow:hidden}
+.thumb img,.pic img,.store-mark img{width:100%;height:100%;object-fit:cover;display:block}
+.pimgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-bottom:8px}
+.pimg{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--sunk);border:1px solid var(--line)}
+.pimg img{width:100%;height:100%;object-fit:cover;display:block}
+.pimg .x{position:absolute;top:4px;inset-inline-end:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:16px;line-height:1}
+.pimg .cover{position:absolute;bottom:4px;inset-inline-start:4px;border:0;border-radius:6px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:2px 6px}
+.pimg.first{outline:2px solid var(--brand);outline-offset:-2px}
+.upload{position:relative;overflow:hidden}
+.upload input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.gal-main{aspect-ratio:1;border-radius:14px;overflow:hidden;background:var(--sunk)}
+.gal-main img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-thumbs{display:flex;gap:6px;margin-top:8px;overflow-x:auto}
+.gal-thumbs button{width:56px;height:56px;flex:none;border-radius:9px;overflow:hidden;border:2px solid transparent;padding:0;background:var(--sunk)}
+.gal-thumbs button[aria-pressed="true"]{border-color:var(--brand)}
+.gal-thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.link-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;margin-bottom:14px}
+.link-card .url{direction:ltr;text-align:left;font-size:13.5px;background:var(--sunk);border-radius:8px;padding:8px 10px;margin:6px 0 10px;word-break:break-all}
+.sf-logo{width:64px;height:64px;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.2);margin-bottom:10px}
+.sf-logo img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* Auth */
+.auth{min-height:calc(100vh - 34px);display:grid;place-items:center;padding:24px 16px}
+.auth-box{width:100%;max-width:400px}
+.auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.auth-brand .store-mark{width:48px;height:48px;border-radius:14px;font-size:22px}
+.auth-brand h1{margin:0;font-size:24px}
+.auth-brand p{margin:0;color:var(--muted);font-size:13.5px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--sunk);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:16px}
+.tabs button{border:0;background:none;border-radius:9px;padding:9px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.hint{margin-top:16px;padding:12px 14px;border:1px dashed var(--line-strong);border-radius:12px;font-size:13px;color:var(--muted)}
+.hint b{color:var(--ink)}
+body.signed-out header.top, body.signed-out .shell, body.signed-out nav.bottom{display:none}
+body:not(.signed-out) #auth{display:none}
+
+/* Toast */
+.toast{position:fixed;z-index:60;left:50%;transform:translateX(-50%);bottom:calc(var(--nav-h) + 24px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;max-width:calc(100vw - 32px);display:none}
+.toast.show{display:block}
+.toast.bad{background:var(--bad);color:#fff}
+
+/* Print */
+#print{display:none}
+@media print{
+  body > *:not(#print){display:none !important}
+  #print{display:block;color:#000;font-family:"Readex Pro",sans-serif;padding:10mm}
+  #print table{width:100%;border-collapse:collapse}
+  #print td,#print th{border-bottom:1px solid #999;padding:6px 4px;text-align:start}
+}
+@media (prefers-reduced-motion: reduce){ .sheet{transition:none} }
+</style>
+</head>
+<body>
+<div class="demo-bar">نموذج عرض: البيانات تجريبية وتُحفظ في هذا المتصفح فقط، ولا يوجد خادم. <button type="button" data-act="reset-demo">إعادة البيانات</button></div>
+
+<header class="top">
+  <div class="store-mark" id="storeMark">أ</div>
+  <div class="store-pick">
+    <b id="storeName" class="trunc" style="display:block;font-size:16px"></b>
+    <small id="storeSub"></small>
+  </div>
+  <select class="role-pick" id="roleSelect" aria-label="تجربة الصلاحيات">
+    <option value="owner">المالك</option>
+    <option value="orders">موظف طلبات</option>
+    <option value="inventory">موظف مخزون</option>
+  </select>
+  <button class="icon-btn" type="button" data-act="open-storefront" aria-label="واجهة المتجر للزبائن" title="واجهة المتجر للزبائن">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l1.5-5h15L21 9"/><path d="M4 9v11h16V9"/><path d="M3 9h18"/><path d="M9 20v-6h6v6"/></svg>
+  </button>
+  <button class="icon-btn" type="button" data-act="logout" aria-label="تسجيل الخروج" title="تسجيل الخروج">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4H5v16h5"/><path d="M14 8l-4 4 4 4"/><path d="M10 12h10"/></svg>
+  </button>
+</header>
+<div id="auth"></div>
+
+<div class="shell">
+  <nav class="side" id="sideNav" aria-label="الأقسام"></nav>
+  <main id="view" tabindex="-1"></main>
+</div>
+<nav class="bottom" id="bottomNav" aria-label="الأقسام"></nav>
+
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle"></div>
+<div class="sf" id="storefront" aria-label="واجهة المتجر"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="print"></div>
+
+<script>
+'use strict';
+/* =========================================================================
+   Demo of the stores platform UI. Everything runs in the browser.
+   The real system enforces every rule below on the server and in the DB;
+   here it is mirrored in JS so the flow can be tried without a backend.
+   ========================================================================= */
+
+const KEY = 'sp-demo-v2';
+const DAY = 864e5;
+
+const STATUS = {
+  new:       { l: 'جديد',         c: 'var(--new)' },
+  confirmed: { l: 'مؤكد',         c: 'var(--confirmed)' },
+  preparing: { l: 'قيد التجهيز',  c: 'var(--preparing)' },
+  shipped:   { l: 'عند التوصيل',  c: 'var(--shipped)' },
+  delivered: { l: 'تم التسليم',   c: 'var(--delivered)' },
+  canceled:  { l: 'ملغى',         c: 'var(--canceled)' },
+  returned:  { l: 'مرتجع',        c: 'var(--returned)' },
+};
+const NEXT = {
+  new: ['confirmed', 'canceled'],
+  confirmed: ['preparing', 'canceled'],
+  preparing: ['shipped', 'canceled'],
+  shipped: ['delivered', 'returned'],
+  delivered: ['returned'],
+  canceled: [],
+  returned: [],
+};
+const ACTION_LABEL = {
+  confirmed: 'تأكيد الطلب', preparing: 'بدء التجهيز', shipped: 'تسليم لشركة التوصيل',
+  delivered: 'تم التسليم للزبون', canceled: 'إلغاء الطلب', returned: 'تسجيل مرتجع',
+};
+const STOCK_OUT = new Set(['confirmed', 'preparing', 'shipped', 'delivered']); // stock already deducted
+
+const ROLES = {
+  owner:     { l: 'المالك',      p: ['home', 'orders', 'orders.write', 'products', 'products.write', 'cost', 'customers', 'reports', 'settings'] },
+  orders:    { l: 'موظف طلبات',  p: ['home', 'orders', 'orders.write', 'products', 'customers'] },
+  inventory: { l: 'موظف مخزون',  p: ['home', 'orders', 'products', 'products.write', 'cost'] },
+};
+
+const CITIES = ['بغداد', 'الأنبار', 'البصرة', 'أربيل', 'نينوى', 'النجف', 'كربلاء', 'بابل', 'ديالى', 'صلاح الدين'];
+const TILE_COLORS = ['#1f6b4f', '#8a4b14', '#2f4f8f', '#7b2d55', '#4b5a1e', '#a23b2a', '#3a5f66', '#6a4c93'];
+
+const ICONS = {
+  home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/>',
+  orders: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/>',
+  products: '<path d="M3 8l9-5 9 5-9 5-9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',
+  customers: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 010 7M18.5 14.8c1.6.9 2.6 2.6 3 5.2"/>',
+  reports: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.6 1.6 0 00-1.8-.3 1.6 1.6 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.6 1.6 0 00-1-1.5 1.6 1.6 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.6 1.6 0 00.3-1.8 1.6 1.6 0 00-1.5-1H3a2 2 0 110-4h.1a1.6 1.6 0 001.5-1 1.6 1.6 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.6 1.6 0 001.8.3H9a1.6 1.6 0 001-1.5V3a2 2 0 114 0v.1a1.6 1.6 0 001 1.5 1.6 1.6 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.6 1.6 0 00-.3 1.8V9a1.6 1.6 0 001.5 1H21a2 2 0 110 4h-.1a1.6 1.6 0 00-1.5 1z"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  phone: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2"/>',
+  copy: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 011-1h10"/>',
+  camera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  share: '<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/>',
+  print: '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',
+};
+const NAV = [
+  { id: 'home', l: 'الرئيسية' },
+  { id: 'orders', l: 'الطلبات' },
+  { id: 'products', l: 'المنتجات' },
+  { id: 'customers', l: 'الزبائن' },
+  { id: 'reports', l: 'الأرباح' },
+  { id: 'settings', l: 'الإعدادات', sideOnly: true },
+];
+
+/* ---------------- helpers ---------------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const money = (n) => `<span class="num">${Math.round(n).toLocaleString('en-US')}</span> د.ع`;
+const moneyText = (n) => `${Math.round(n).toLocaleString('en-US')} د.ع`;
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-3);
+const icon = (n) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]}</svg>`;
+const badge = (s) => `<span class="badge" style="--c:${STATUS[s].c}">${STATUS[s].l}</span>`;
+const normPhone = (p) => String(p || '').replace(/[\s-]/g, '').replace(/^\+964/, '0');
+const validPhone = (p) => /^07[0-9]{9}$/.test(normPhone(p));
+
+function ago(ts) {
+  const d = Date.now() - ts;
+  if (d < 60e3) return 'الآن';
+  if (d < 3600e3) return `منذ ${Math.floor(d / 60e3)} د`;
+  if (d < DAY) return `منذ ${Math.floor(d / 3600e3)} س`;
+  const days = Math.floor(d / DAY);
+  if (days === 1) return 'أمس';
+  if (days < 7) return `منذ ${days} أيام`;
+  return dateText(ts);
+}
+function dateText(ts) {
+  const d = new Date(ts);
+  return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+}
+function startOfDay(ts) { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d.getTime(); }
+function monthKey(ts) { const d = new Date(ts); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; }
+const MONTHS = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران', 'تموز', 'آب', 'أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول'];
+function monthLabel(key) { const [y, m] = key.split('-').map(Number); return `${MONTHS[m - 1]} ${y}`; }
+
+/* ---------------- seed data ---------------- */
+function rng(seed) { let s = seed; return () => (s = (s * 1103515245 + 12345) % 2147483648) / 2147483648; }
+
+function seedStore(def, seed) {
+  const r = rng(seed);
+  const pick = (a) => a[Math.floor(r() * a.length)];
+  const products = def.products.map((p, i) => ({
+    id: uid(), name: p[0], category: p[1], desc: p[2], active: true, low: p[5] ?? 3,
+    color: TILE_COLORS[(i + seed) % TILE_COLORS.length],
+    variants: p[3].map((label) => ({ id: uid(), label, price: p[4][0], cost: p[4][1], stock: 0 })),
+    stagnant: !!p[6],
+  }));
+  const sellable = products.filter((p) => !p.stagnant).flatMap((p) => p.variants.map((v) => ({ p, v })));
+  const store = {
+    id: uid(), name: def.name, slug: def.slug, color: def.color, phone: def.phone, tagline: def.tagline,
+    products, orders: [], expenses: [], movements: [], notes: {}, nextNo: 1001, createdAt: Date.now() - 60 * DAY,
+  };
+  const now = Date.now();
+  const custs = def.customers.map((n) => ({ name: n, phone: '07' + pick(['70', '71', '72', '80', '81', '50', '51']) + String(Math.floor(1e7 + r() * 9e7)).slice(0, 7), city: pick(CITIES) }));
+  const sold = new Map();
+  const N = def.orders;
+  for (let i = 0; i < N; i++) {
+    const age = Math.floor(Math.pow(r(), 1.3) * 42 * DAY);
+    const created = now - age - Math.floor(r() * 5 * 3600e3);
+    const c = pick(custs);
+    const nItems = 1 + Math.floor(r() * 2.4);
+    const items = [];
+    for (let k = 0; k < nItems; k++) {
+      const { p, v } = pick(sellable);
+      if (items.some((x) => x.variantId === v.id)) continue;
+      items.push({ productId: p.id, variantId: v.id, name: p.name, label: v.label, price: v.price, cost: v.cost, qty: r() < 0.8 ? 1 : 2 });
+    }
+    const days = age / DAY;
+    let path;
+    const x = r();
+    if (days < 1) path = x < 0.55 ? ['new'] : x < 0.8 ? ['new', 'confirmed'] : ['new', 'confirmed', 'preparing'];
+    else if (days < 4) path = x < 0.12 ? ['new', 'canceled'] : x < 0.35 ? ['new', 'confirmed', 'preparing'] : ['new', 'confirmed', 'preparing', 'shipped'];
+    else path = x < 0.08 ? ['new', 'canceled'] : x < 0.18 ? ['new', 'confirmed', 'preparing', 'shipped', 'returned'] : x < 0.24 ? ['new', 'confirmed', 'preparing', 'shipped'] : ['new', 'confirmed', 'preparing', 'shipped', 'delivered'];
+    const steps = [0, 0.3, 0.6, 1.4, 2.6, 3.5].map((h) => h * DAY * (days < 4 ? 0.3 : 1));
+    const history = path.map((s, j) => ({ to: s, at: Math.min(now - 60e3, created + steps[j] + j * 3600e3), by: j === 0 ? 'الزبون' : 'المالك' }));
+    const city = c.city;
+    const order = {
+      id: uid(), no: store.nextNo++, source: r() < 0.55 ? 'storefront' : 'manual',
+      customer: { name: c.name, phone: c.phone, city, address: pick(def.streets) },
+      items, discount: r() < 0.15 ? 2000 : 0, delivery: city === 'بغداد' ? 5000 : 6000,
+      status: path[path.length - 1], createdAt: created, history, note: '',
+    };
+    store.orders.push(order);
+    const out = path.includes('confirmed') && order.status !== 'canceled' && order.status !== 'returned';
+    if (out) for (const it of items) sold.set(it.variantId, (sold.get(it.variantId) || 0) + it.qty);
+  }
+  store.orders.sort((a, b) => a.createdAt - b.createdAt);
+  store.orders.forEach((o, i) => { o.no = 1001 + i; });
+  store.nextNo = 1001 + store.orders.length;
+
+  // Stock: chosen current level; an opening "received" movement explains it together with sales.
+  for (const p of products) for (const v of p.variants) {
+    const cur = p.stagnant ? 4 + Math.floor(r() * 4) : Math.floor(r() * 14);
+    v.stock = cur;
+    const s = sold.get(v.id) || 0;
+    store.movements.push({ id: uid(), variantId: v.id, qty: cur + s, reason: 'استلام بضاعة', at: store.createdAt, by: 'المالك' });
+  }
+  for (const o of store.orders) {
+    const conf = o.history.find((h) => h.to === 'confirmed');
+    if (!conf) continue;
+    for (const it of o.items) store.movements.push({ id: uid(), variantId: it.variantId, qty: -it.qty, reason: `تأكيد الطلب #${o.no}`, at: conf.at, by: 'المالك' });
+    const back = o.history.find((h) => h.to === 'returned' || h.to === 'canceled');
+    if (back) for (const it of o.items) store.movements.push({ id: uid(), variantId: it.variantId, qty: it.qty, reason: `${STATUS[back.to].l} #${o.no}`, at: back.at, by: 'المالك' });
+  }
+  const mk = (daysAgo, cat, amount, note) => ({ id: uid(), category: cat, amount, at: now - daysAgo * DAY, note });
+  const thisMonthDay = new Date().getDate();
+  store.expenses.push(
+    mk(Math.min(thisMonthDay - 1, 2), 'إعلانات', def.ads, 'إعلان ممول إنستغرام'),
+    mk(Math.min(thisMonthDay - 1, 0), 'إيجار', def.rent, 'إيجار المخزن'),
+    mk(Math.min(thisMonthDay - 1, 5), 'تغليف', 40000, 'أكياس وكارتون'),
+    mk(thisMonthDay + 3, 'إعلانات', def.ads, 'إعلان ممول إنستغرام'),
+    mk(thisMonthDay + 1, 'إيجار', def.rent, 'إيجار المخزن'),
+  );
+  return store;
+}
+
+async function seedState() {
+  const a = seedStore({
+    name: 'أناقة بغداد', slug: 'anaqa', color: '#1f6b4f', phone: '07701234567', tagline: 'ملابس يومية بأسعار واضحة، توصيل لكل المحافظات',
+    ads: 150000, rent: 300000, orders: 46,
+    streets: ['المنصور، شارع 14 رمضان', 'الكرادة داخل', 'زيونة، قرب الجامع', 'حي الجامعة', 'الرمادي، حي الضباط', 'الفلوجة، الجولان', 'العشار، قرب الكورنيش', 'شارع 60'],
+    customers: ['زينب علي', 'مصطفى حسن', 'نور الهدى كريم', 'أحمد جاسم', 'سارة محمود', 'علي حيدر', 'رقية سعد', 'حسين عباس', 'مريم فاضل', 'عمر خالد', 'آية ناصر', 'يوسف رعد', 'هبة سلام', 'كرار مهدي', 'دعاء صباح'],
+    products: [
+      ['قميص قطن رجالي', 'رجالي', 'قطن 100٪، قصّة عادية.', ['أبيض / M', 'أبيض / L', 'أسود / M', 'أسود / L'], [25000, 14000]],
+      ['بنطلون جينز', 'رجالي', 'جينز مرن، لون أزرق غامق.', ['مقاس 32', 'مقاس 34', 'مقاس 36'], [35000, 21000]],
+      ['فستان صيفي', 'نسائي', 'قماش خفيف، طول متوسط.', ['S', 'M', 'L'], [42000, 24000]],
+      ['حجاب شيفون', 'نسائي', 'شيفون ناعم، 180×70 سم.', ['بيج', 'أسود', 'زيتي', 'وردي'], [8000, 3500], 5],
+      ['حقيبة يد جلد', 'إكسسوارات', 'جلد صناعي، بحزام كتف.', ['بني', 'أسود'], [55000, 30000], 2],
+      ['جاكيت شتوي', 'رجالي', 'مبطّن، مقاوم للمطر.', ['M', 'L'], [65000, 40000], 2, true],
+    ],
+  }, 7);
+  const b = seedStore({
+    name: 'عطور الرافدين', slug: 'rafidain-oud', color: '#8a4b14', phone: '07809876543', tagline: 'عطور شرقية وفرنسية أصلية',
+    ads: 90000, rent: 200000, orders: 24,
+    streets: ['الأعظمية، راس الحواش', 'الحارثية', 'الكوفة، حي ميسان', 'كربلاء، حي الحسين', 'الموصل، الزهور'],
+    customers: ['عبدالله فيصل', 'لمى حسين', 'باقر جواد', 'فاطمة سامي', 'محمد طارق', 'رسل عادل', 'سيف الدين', 'حنين مؤيد'],
+    products: [
+      ['عطر عود ملكي', 'شرقي', 'دهن عود مع عنبر، 50 مل.', ['50 مل'], [45000, 22000]],
+      ['عطر فرنسي نسائي', 'فرنسي', 'زهري فواكه، 100 مل.', ['100 مل'], [60000, 31000]],
+      ['بخور كمبودي', 'بخور', 'علبة 40 غرام.', ['40 غ'], [25000, 11000]],
+      ['معطّر سيارة', 'إكسسوارات', 'يدوم 30 يوماً تقريباً.', ['عود', 'مسك', 'ورد'], [7000, 2500], 6],
+      ['طقم هدايا', 'هدايا', 'عطر + بخور + مبخرة.', ['قياسي'], [85000, 47000], 2, true],
+    ],
+  }, 19);
+  const ua = await makeUser('صاحب أناقة بغداد', 'anaqa@demo.iq', 'demo1234', a);
+  const ub = await makeUser('صاحب عطور الرافدين', 'oud@demo.iq', 'demo1234', b);
+  return { users: [ua, ub], stores: [a, b], session: null, current: null, role: 'owner', view: 'home', orderFilter: 'all', q: '' };
+}
+
+/* ---------------- accounts (demo: stored in this browser only) ----------------
+   In the real system accounts live on the server (argon2id, sessions, RLS).
+   Here passwords are salted + SHA-256 hashed so they are not kept in plain text. */
+async function hashPw(pw, salt) {
+  const data = `${salt}:${pw}`;
+  if (window.crypto && crypto.subtle && window.isSecureContext) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(data));
+    return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  // Fallback for pages opened where SubtleCrypto is unavailable: a simple 64-bit FNV-style hash, demo only.
+  let h1 = 0x811c9dc5, h2 = 0x01000193;
+  for (let i = 0; i < data.length; i++) {
+    const c = data.charCodeAt(i);
+    h1 = Math.imul(h1 ^ c, 16777619) >>> 0;
+    h2 = Math.imul(h2 ^ c, 2246822519) >>> 0;
+  }
+  return 'f' + h1.toString(16).padStart(8, '0') + h2.toString(16).padStart(8, '0');
+}
+async function makeUser(name, email, pw, st) {
+  const salt = uid();
+  const u = { id: uid(), name, email: email.toLowerCase(), salt, hash: await hashPw(pw, salt), storeId: st.id, createdAt: Date.now() };
+  st.ownerId = u.id;
+  return u;
+}
+function emptyStore(name, slug) {
+  return { id: uid(), name, slug, color: TILE_COLORS[Math.floor(Math.random() * TILE_COLORS.length)], phone: '', tagline: '', products: [], orders: [], expenses: [], movements: [], notes: {}, nextNo: 1001, createdAt: Date.now() };
+}
+function slugify(name) {
+  const latin = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30);
+  let base = latin.length >= 3 ? latin : 'store';
+  let slug = base === 'store' ? `store-${Math.floor(1000 + Math.random() * 9000)}` : base;
+  while (state.stores.some((s) => s.slug === slug)) slug = `${base}-${Math.floor(1000 + Math.random() * 9000)}`;
+  return slug;
+}
+const currentUser = () => (state.session ? state.users.find((u) => u.id === state.session) : null);
+
+/* ---------------- images (stored in this browser's IndexedDB) ----------------
+   Real system: the browser uploads straight to object storage with a signed URL. */
+const IMG_MAX = 5;
+const RESERVED = new Set(['admin', 'api', 'app', 'www', 'login', 'register', 'store', 'stores', 's', 'static', 'help', 'support']);
+let idbPromise = null;
+const memImgs = new Map(); // fallback when IndexedDB is unavailable (lost on reload)
+function idb() {
+  if (!idbPromise) {
+    idbPromise = new Promise((resolve) => {
+      try {
+        const req = indexedDB.open('sp-demo-images', 1);
+        req.onupgradeneeded = () => req.result.createObjectStore('imgs');
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => resolve(null);
+      } catch (e) { resolve(null); }
+    });
+  }
+  return idbPromise;
+}
+async function imgPut(id, blob) {
+  const db = await idb();
+  if (!db) { memImgs.set(id, blob); return; }
+  await new Promise((res, rej) => { const tx = db.transaction('imgs', 'readwrite'); tx.objectStore('imgs').put(blob, id); tx.oncomplete = res; tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error); });
+}
+async function imgGet(id) {
+  const db = await idb();
+  if (!db) return memImgs.get(id) || null;
+  return new Promise((res) => { const r = db.transaction('imgs').objectStore('imgs').get(id); r.onsuccess = () => res(r.result || null); r.onerror = () => res(null); });
+}
+async function imgDel(ids) {
+  for (const id of ids) { const u = imgUrls.get(id); if (u) { URL.revokeObjectURL(u); imgUrls.delete(id); } memImgs.delete(id); }
+  const db = await idb();
+  if (!db || !ids.length) return;
+  await new Promise((res) => { const tx = db.transaction('imgs', 'readwrite'); ids.forEach((id) => tx.objectStore('imgs').delete(id)); tx.oncomplete = res; tx.onerror = res; });
+}
+async function imgClearAll() {
+  memImgs.clear(); imgUrls.forEach((u) => URL.revokeObjectURL(u)); imgUrls.clear();
+  const db = await idb();
+  if (!db) return;
+  await new Promise((res) => { const tx = db.transaction('imgs', 'readwrite'); tx.objectStore('imgs').clear(); tx.oncomplete = res; tx.onerror = res; });
+}
+const imgUrls = new Map();
+async function hydrateImages(root) {
+  const imgs = (root || document).querySelectorAll('img[data-img]:not([src])');
+  for (const el of imgs) {
+    const id = el.dataset.img;
+    let url = imgUrls.get(id);
+    if (!url) {
+      const blob = await imgGet(id);
+      if (!blob) { el.closest('.pimg,.thumb,.pic,.gal-main,.store-mark,.sf-logo')?.classList.add('noimg'); continue; }
+      url = URL.createObjectURL(blob);
+      imgUrls.set(id, url);
+    }
+    el.src = url;
+  }
+}
+// Any <img data-img> added anywhere gets its picture, so templates stay synchronous.
+new MutationObserver(() => hydrateImages(document)).observe(document.documentElement, { childList: true, subtree: true });
+
+// Resize + re-encode on the phone before saving: smaller files, and it strips hidden metadata (location etc.).
+async function compressImage(file, max = 1000, quality = 0.82) {
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error('bad image')); i.src = url; });
+    const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+    const w = Math.max(1, Math.round(img.naturalWidth * scale)), h = Math.max(1, Math.round(img.naturalHeight * scale));
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    const webp = await new Promise((r) => c.toBlob(r, 'image/webp', quality));
+    if (webp && webp.type === 'image/webp') return webp;
+    return await new Promise((r) => c.toBlob(r, 'image/jpeg', quality));
+  } finally { URL.revokeObjectURL(url); }
+}
+async function addImages(files, room, max) {
+  const ids = [];
+  let skipped = 0;
+  for (const f of Array.from(files)) {
+    if (ids.length >= room) { skipped++; continue; }
+    if (!/^image\//.test(f.type) || f.size > 20 * 1024 * 1024) { skipped++; continue; }
+    try {
+      const blob = await compressImage(f, max);
+      if (!blob) { skipped++; continue; }
+      const id = 'img_' + uid();
+      await imgPut(id, blob);
+      ids.push(id);
+    } catch (e) { skipped++; }
+  }
+  return { ids, skipped };
+}
+function tile(p, cls) {
+  const cover = p.images && p.images[0];
+  if (cover) return `<div class="${cls}" style="background:var(--sunk)"><img data-img="${cover}" alt="${esc(p.name)}" loading="lazy"></div>`;
+  return `<div class="${cls}" style="background:${p.color}">${esc(p.name.charAt(0))}</div>`;
+}
+
+/* ---------------- state ---------------- */
+let state;
+async function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) { state = JSON.parse(raw); if (state && Array.isArray(state.users) && Array.isArray(state.stores)) return; } } catch (e) { /* storage unavailable */ }
+  state = await seedState();
+  save();
+}
+let warnedFull = false;
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {
+    // Quota full or storage blocked: the demo keeps working in memory for this visit.
+    if (!warnedFull) { warnedFull = true; toast('مساحة التخزين في المتصفح ممتلئة؛ التغييرات لن تبقى بعد إغلاق الصفحة', true); }
+  }
+}
+
+// A signed-in user only ever sees the store tied to their account.
+const store = () => {
+  const u = currentUser();
+  return u ? state.stores.find((s) => s.id === u.storeId) : null;
+};
+const can = (perm) => ROLES[state.role].p.includes(perm);
+const findVariant = (s, vid) => { for (const p of s.products) { const v = p.variants.find((x) => x.id === vid); if (v) return { p, v }; } return null; };
+const orderSubtotal = (o) => o.items.reduce((t, it) => t + it.price * it.qty, 0);
+const orderTotal = (o) => Math.max(0, orderSubtotal(o) - (o.discount || 0)) + (o.delivery || 0);
+const orderCost = (o) => o.items.reduce((t, it) => t + it.cost * it.qty, 0);
+const statusAt = (o, s) => { const h = o.history.find((x) => x.to === s); return h ? h.at : null; };
+const totalStock = (p) => p.variants.reduce((t, v) => t + v.stock, 0);
+const isLow = (p) => p.active && p.variants.some((v) => v.stock <= p.low);
+
+/* ---------------- business rules (mirrors server policy) ---------------- */
+function changeStatus(o, to) {
+  const s = store();
+  if (!can('orders.write')) return fail('لا تملك صلاحية تعديل الطلبات');
+  if (!NEXT[o.status].includes(to)) return fail('هذا الانتقال غير مسموح');
+  if (to === 'confirmed') {
+    // Deduct stock on confirm, all-or-nothing.
+    for (const it of o.items) {
+      const f = findVariant(s, it.variantId);
+      if (!f) return fail(`المنتج "${it.name}" لم يعد موجوداً`);
+      if (f.v.stock < it.qty) return fail(`لا يكفي المخزون: ${it.name} (${it.label}) متوفر ${f.v.stock} فقط`);
+    }
+    for (const it of o.items) {
+      findVariant(s, it.variantId).v.stock -= it.qty;
+      s.movements.push({ id: uid(), variantId: it.variantId, qty: -it.qty, reason: `تأكيد الطلب #${o.no}`, at: Date.now(), by: ROLES[state.role].l });
+    }
+  }
+  if ((to === 'canceled' || to === 'returned') && STOCK_OUT.has(o.status)) {
+    for (const it of o.items) {
+      const f = findVariant(s, it.variantId);
+      if (!f) continue;
+      f.v.stock += it.qty;
+      s.movements.push({ id: uid(), variantId: it.variantId, qty: it.qty, reason: `${STATUS[to].l} #${o.no}`, at: Date.now(), by: ROLES[state.role].l });
+    }
+  }
+  o.history.push({ from: o.status, to, at: Date.now(), by: ROLES[state.role].l });
+  o.status = to;
+  save();
+  return true;
+}
+
+function createOrder(s, data, source, by) {
+  const o = {
+    id: uid(), no: s.nextNo++, source, customer: data.customer, items: data.items,
+    discount: data.discount || 0, delivery: data.delivery || 0, status: 'new', createdAt: Date.now(),
+    history: [{ to: 'new', at: Date.now(), by }], note: data.note || '',
+  };
+  s.orders.push(o);
+  save();
+  return o;
+}
+
+function customersOf(s) {
+  const map = new Map();
+  for (const o of s.orders) {
+    const k = normPhone(o.customer.phone);
+    let c = map.get(k);
+    if (!c) { c = { phone: k, name: o.customer.name, city: o.customer.city, address: o.customer.address, orders: [], spent: 0, last: 0 }; map.set(k, c); }
+    c.orders.push(o);
+    if (o.createdAt >= c.last) { c.last = o.createdAt; c.name = o.customer.name; c.city = o.customer.city; c.address = o.customer.address; }
+    if (o.status === 'delivered') c.spent += orderTotal(o) - o.delivery;
+  }
+  return Array.from(map.values()).sort((a, b) => b.last - a.last);
+}
+
+function monthReport(s, key) {
+  const delivered = s.orders.filter((o) => o.status === 'delivered' && monthKey(statusAt(o, 'delivered')) === key);
+  const revenue = delivered.reduce((t, o) => t + Math.max(0, orderSubtotal(o) - o.discount), 0);
+  const cogs = delivered.reduce((t, o) => t + orderCost(o), 0);
+  const expenses = s.expenses.filter((e) => monthKey(e.at) === key);
+  const exp = expenses.reduce((t, e) => t + e.amount, 0);
+  const returned = s.orders.filter((o) => o.status === 'returned' && monthKey(statusAt(o, 'returned')) === key);
+  const qty = new Map();
+  for (const o of delivered) for (const it of o.items) {
+    const k = it.productId;
+    const cur = qty.get(k) || { name: it.name, qty: 0, revenue: 0 };
+    cur.qty += it.qty; cur.revenue += it.price * it.qty; qty.set(k, cur);
+  }
+  return {
+    delivered, revenue, cogs, gross: revenue - cogs, exp, net: revenue - cogs - exp, expenses, returned,
+    top: Array.from(qty.values()).sort((a, b) => b.qty - a.qty).slice(0, 5),
+  };
+}
+
+function stagnant(s) {
+  const since = Date.now() - 30 * DAY;
+  const moved = new Set();
+  for (const o of s.orders) if (o.createdAt >= since && o.status !== 'canceled') for (const it of o.items) moved.add(it.productId);
+  return s.products.filter((p) => p.active && !moved.has(p.id) && totalStock(p) > 0);
+}
+
+/* ---------------- UI plumbing ---------------- */
+let toastTimer;
+function toast(msg, bad) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (bad ? ' bad' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = 'toast'; }, 2800);
+}
+function fail(msg) { toast(msg, true); return false; }
+
+let lastFocus = null;
+function openSheet(html, onMount) {
+  lastFocus = document.activeElement;
+  const sh = $('#sheet');
+  sh.innerHTML = `<div class="grab"></div>${html}`;
+  $('#scrim').classList.add('open');
+  sh.classList.add('open');
+  if (onMount) onMount(sh);
+  const first = sh.querySelector('input,select,textarea,button:not([data-act="close-sheet"])');
+  if (first) setTimeout(() => first.focus(), 60);
+}
+function closeSheet() {
+  $('#sheet').classList.remove('open');
+  $('#scrim').classList.remove('open');
+  if (lastFocus && lastFocus.focus) lastFocus.focus();
+}
+function sheetHead(title) {
+  return `<div class="sheet-head"><h3 id="sheetTitle">${title}</h3><button class="icon-btn" type="button" data-act="close-sheet" aria-label="إغلاق">${icon('close')}</button></div>`;
+}
+function confirmSheet(title, body, okLabel, danger) {
+  return new Promise((resolve) => {
+    openSheet(`${sheetHead(esc(title))}<p>${esc(body)}</p>
+      <div class="actions"><button class="btn" type="button" id="cNo">رجوع</button>
+      <button class="btn ${danger ? 'danger' : 'primary'}" type="button" id="cYes">${esc(okLabel)}</button></div>`, (sh) => {
+      sh.querySelector('#cNo').onclick = () => { closeSheet(); resolve(false); };
+      sh.querySelector('#cYes').onclick = () => { closeSheet(); resolve(true); };
+    });
+  });
+}
+
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e2) { ok = false; }
+    ta.remove();
+    return ok;
+  }
+}
+
+/* ---------------- chrome ---------------- */
+function renderChrome() {
+  const s = store();
+  document.documentElement.style.setProperty('--brand', s.color);
+  $('#storeMark').innerHTML = s.logo ? `<img data-img="${s.logo}" alt="شعار ${esc(s.name)}">` : esc(s.name.trim().charAt(0));
+  $('#storeName').textContent = s.name;
+  $('#storeSub').textContent = `${currentUser().name} · ${ROLES[state.role].l}`;
+  $('#roleSelect').value = state.role;
+  const allowed = NAV.filter((n) => can(n.id));
+  const btn = (n) => `<button type="button" data-nav="${n.id}" ${state.view === n.id ? 'aria-current="page"' : ''}>${icon(n.id)}<span>${n.l}</span></button>`;
+  $('#sideNav').innerHTML = allowed.map(btn).join('');
+  $('#bottomNav').innerHTML = allowed.filter((n) => !n.sideOnly).map(btn).join('') + (can('settings') ? `<button type="button" data-nav="settings" ${state.view === 'settings' ? 'aria-current="page"' : ''}>${icon('settings')}<span>الإعدادات</span></button>` : '');
+}
+
+function render() {
+  if (!store()) { state.session = null; renderAuth(); return; }
+  document.body.classList.remove('signed-out');
+  if (!can(state.view)) state.view = 'home';
+  renderChrome();
+  const v = $('#view');
+  const views = { home: viewHome, orders: viewOrders, products: viewProducts, customers: viewCustomers, reports: viewReports, settings: viewSettings };
+  v.innerHTML = views[state.view]();
+  const fab = $('.fab');
+  if (fab) fab.blur();
+}
+
+function go(view) {
+  state.view = view;
+  save();
+  render();
+  window.scrollTo(0, 0);
+}
+
+/* ---------------- sign in / create account ---------------- */
+let authTab = 'login';
+function normId(v) {
+  const s = String(v || '').trim();
+  if (s.includes('@')) return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s) ? s.toLowerCase() : null;
+  return validPhone(s) ? normPhone(s) : null;
+}
+function renderAuth() {
+  document.body.classList.add('signed-out');
+  closeSheet();
+  const reg = authTab === 'register';
+  $('#auth').innerHTML = `
+  <div class="auth"><div class="auth-box">
+    <div class="auth-brand"><div class="store-mark">د</div><div><h1>دفتر الطلبات</h1><p>كل طلباتك ومخزونك وأرباحك في مكان واحد</p></div></div>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="login" aria-selected="${!reg}">تسجيل الدخول</button>
+      <button type="button" role="tab" data-tab="register" aria-selected="${reg}">إنشاء متجر جديد</button>
+    </div>
+    ${reg ? '<h2 style="margin:0 0 10px">أنشئ متجرك خلال دقيقة</h2>' : ''}
+    <form class="panel" id="authForm" novalidate>
+      ${reg ? `
+        <div class="field"><label for="aName">اسمك</label><input class="input" id="aName" maxlength="80" autocomplete="name"></div>
+        <div class="field"><label for="aStore">اسم متجرك</label><input class="input" id="aStore" maxlength="80" placeholder="مثال: عطور الأنبار"></div>` : ''}
+      <div class="field"><label for="aId">البريد الإلكتروني أو رقم الهاتف</label><input class="input" id="aId" maxlength="120" autocomplete="username" dir="ltr" style="text-align:right"></div>
+      <div class="field"><label for="aPw">كلمة المرور</label><input class="input" id="aPw" type="password" maxlength="200" autocomplete="${reg ? 'new-password' : 'current-password'}">${reg ? '<small class="sub">8 أحرف على الأقل</small>' : ''}</div>
+      <div id="aErr" class="err" hidden></div>
+      <button class="btn primary block" type="submit" id="aSubmit">${reg ? 'إنشاء الحساب والمتجر' : 'دخول'}</button>
+    </form>
+    ${reg ? `<p class="sub" style="text-align:center;margin-top:14px">يُنشأ لك متجر خاص بك. لا يرى أحد غيرك منتجاته وطلباته.</p>
+    <button class="btn block" type="button" data-tab="login" style="margin-top:6px">عندي حساب، أريد تسجيل الدخول</button>` : `
+    <div class="panel" style="margin-top:14px;text-align:center">
+      <div style="font-weight:600">ما عندك متجر؟</div>
+      <div class="sub" style="margin-bottom:10px">سجّل حساباً جديداً ويُنشأ لك متجرك مباشرة</div>
+      <button class="btn primary block" type="button" data-tab="register">إنشاء متجر جديد</button>
+    </div>
+    <div class="hint">للتجربة بمتجر فيه بيانات: <b dir="ltr">anaqa@demo.iq</b> أو <b dir="ltr">oud@demo.iq</b> وكلمة المرور <b dir="ltr">demo1234</b></div>`}
+  </div></div>`;
+  $('#authForm').addEventListener('submit', onAuthSubmit);
+  setTimeout(() => { const f = $(reg ? '#aName' : '#aId'); if (f) f.focus(); }, 30);
+}
+async function onAuthSubmit(e) {
+  e.preventDefault();
+  const errEl = $('#aErr');
+  const showErr = (m) => { errEl.textContent = m; errEl.hidden = false; };
+  const id = normId($('#aId').value);
+  const pw = $('#aPw').value;
+  const btn = $('#aSubmit');
+  if (authTab === 'register') {
+    const name = $('#aName').value.trim();
+    const storeName = $('#aStore').value.trim();
+    if (!name) return showErr('اكتب اسمك');
+    if (!storeName) return showErr('اكتب اسم متجرك');
+    if (!id) return showErr('اكتب بريداً صحيحاً أو رقم هاتف من 11 رقماً يبدأ بـ 07');
+    if (pw.length < 8) return showErr('كلمة المرور 8 أحرف على الأقل');
+    if (state.users.some((u) => u.email === id)) return showErr('هذا الحساب مسجّل مسبقاً، سجّل الدخول بدلاً من ذلك');
+    btn.disabled = true;
+    const st = emptyStore(storeName, slugify(storeName));
+    const u = await makeUser(name, id, pw, st);
+    state.stores.push(st);
+    state.users.push(u);
+    signIn(u, 'products');
+    toast('أُنشئ حسابك ومتجرك. أضف أول منتج.');
+    return;
+  }
+  if (!id || !pw) return showErr('اكتب بيانات الدخول');
+  btn.disabled = true;
+  const u = state.users.find((x) => x.email === id);
+  const ok = u && (await hashPw(pw, u.salt)) === u.hash;
+  btn.disabled = false;
+  if (!ok) return showErr('البريد أو رقم الهاتف أو كلمة المرور غير صحيحة');
+  signIn(u, 'home');
+}
+function signIn(u, view) {
+  state.session = u.id;
+  state.role = 'owner'; state.view = view; state.orderFilter = 'all'; state.q = ''; state.pq = ''; state.cq = ''; state.month = null;
+  cart = []; cartStore = null;
+  save();
+  render();
+  window.scrollTo(0, 0);
+}
+function signOut() {
+  state.session = null;
+  save();
+  authTab = 'login';
+  renderAuth();
+}
+
+/* ---------------- views ---------------- */
+function linkCard(s) {
+  return `<section class="link-card" aria-label="رابط متجرك">
+    <div class="spread"><b>رابط متجرك</b><span class="sub">أرسله لزبائنك أو ضعه في البايو</span></div>
+    <div class="url">${esc(publicLink(s))}</div>
+    <div class="row" style="flex-wrap:wrap">
+      <button class="btn" type="button" data-act="copy-link">${icon('copy')} نسخ</button>
+      <button class="btn" type="button" data-act="share-link">${icon('share')} مشاركة</button>
+      <button class="btn" type="button" data-act="open-storefront">فتح المتجر</button>
+    </div></section>`;
+}
+async function shareLink(s) {
+  const url = publicLink(s);
+  if (navigator.share) {
+    try { await navigator.share({ title: s.name, text: s.tagline || s.name, url }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  toast((await copyText(url)) ? 'نُسخ رابط المتجر، أرسله لزبائنك' : 'تعذّر النسخ', false);
+}
+
+function viewHome() {
+  const s = store();
+  const counts = {};
+  for (const k of Object.keys(STATUS)) counts[k] = 0;
+  for (const o of s.orders) counts[o.status]++;
+  const flow = ['new', 'confirmed', 'preparing', 'shipped', 'delivered'];
+  const cod = s.orders.filter((o) => o.status === 'shipped').reduce((t, o) => t + orderTotal(o), 0);
+  const today = startOfDay(Date.now());
+  const todays = s.orders.filter((o) => o.createdAt >= today).length;
+  const rep = monthReport(s, monthKey(Date.now()));
+  const low = s.products.filter(isLow);
+  const days = [];
+  for (let i = 13; i >= 0; i--) {
+    const d0 = today - i * DAY;
+    days.push(s.orders.filter((o) => o.createdAt >= d0 && o.createdAt < d0 + DAY).length);
+  }
+  const max = Math.max(1, ...days);
+  const recent = s.orders.slice().sort((a, b) => b.createdAt - a.createdAt).slice(0, 5);
+
+  return `
+  <h1>${esc(s.name)}</h1>
+  ${linkCard(s)}
+  <section class="pipeline" aria-label="مسار الطلبات">
+    <div class="pipe-track">
+      ${flow.map((k) => `<button class="stop ${counts[k] && k !== 'delivered' ? 'hot' : ''}" type="button" style="--c:${STATUS[k].c}" data-filter="${k}">
+        <div class="dot"><span class="num">${counts[k]}</span></div><span>${STATUS[k].l}</span></button>`).join('')}
+    </div>
+    <div class="pipe-foot">
+      <span>ملغى <b class="num">${counts.canceled}</b></span>
+      <span>مرتجع <b class="num">${counts.returned}</b></span>
+      <span>طلبات اليوم <b class="num">${todays}</b></span>
+    </div>
+  </section>
+
+  <dl class="money">
+    <div class="cod"><dt>مبالغ عند شركة التوصيل</dt><dd>${money(cod)}</dd></div>
+    <div><dt>طلبات تنتظر التأكيد</dt><dd><span class="num">${counts.new}</span></dd></div>
+    ${can('reports') ? `<div class="${rep.net < 0 ? 'neg' : ''}"><dt>صافي ربح ${MONTHS[new Date().getMonth()]}</dt><dd>${money(rep.net)}</dd></div>` : `<div><dt>تم التسليم هذا الشهر</dt><dd><span class="num">${rep.delivered.length}</span></dd></div>`}
+    <div><dt>منتجات قاربت على النفاد</dt><dd><span class="num">${low.length}</span></dd></div>
+  </dl>
+
+  <h2>الطلبات آخر 14 يوماً</h2>
+  <div class="panel">
+    <div class="bars" role="img" aria-label="عدد الطلبات يومياً لآخر 14 يوماً">
+      ${days.map((n, i) => `<div class="${i === 13 ? 'today' : ''}" style="height:${(n / max) * 100}%" title="${n} طلب"></div>`).join('')}
+    </div>
+    <div class="bars-x"><span>قبل 13 يوماً</span><span>اليوم</span></div>
+  </div>
+
+  <div class="spread"><h2>أحدث الطلبات</h2><button class="btn" type="button" data-nav="orders">كل الطلبات</button></div>
+  ${orderList(recent)}
+
+  ${low.length ? `<h2>يحتاج إعادة تعبئة</h2><div class="list">${low.map((p) => `
+    <button class="item" type="button" data-product="${p.id}">
+      ${tile(p, 'thumb')}
+      <div class="grow"><div class="trunc">${esc(p.name)}</div>
+      <div class="meta">${p.variants.filter((v) => v.stock <= p.low).map((v) => `${esc(v.label)}: <span class="num">${v.stock}</span>`).join(' ، ')}</div></div>
+      <span class="tag warn">قليل</span></button>`).join('')}</div>` : ''}
+  ${can('orders.write') ? `<button class="btn primary fab" type="button" data-act="new-order">${icon('plus')} طلب جديد</button>` : ''}`;
+}
+
+function orderList(orders) {
+  if (!orders.length) return `<div class="list"><div class="empty">لا توجد طلبات هنا.${can('orders.write') ? '<br><button class="btn primary" type="button" data-act="new-order">سجّل طلباً</button>' : ''}</div></div>`;
+  return `<div class="list">${orders.map((o) => `
+    <button class="item" type="button" data-order="${o.id}">
+      <span class="ono num">#${o.no}</span>
+      <div class="grow"><div class="trunc">${esc(o.customer.name)}</div>
+        <div class="meta">${esc(o.customer.city)} · ${ago(o.createdAt)}${o.source === 'storefront' ? ' · من واجهة المتجر' : ''}</div></div>
+      <div style="text-align:left"><div>${money(orderTotal(o))}</div>${badge(o.status)}</div>
+    </button>`).join('')}</div>`;
+}
+
+function viewOrders() {
+  const s = store();
+  const q = (state.q || '').trim();
+  const nq = normPhone(q);
+  let list = s.orders.slice().sort((a, b) => b.createdAt - a.createdAt);
+  const counts = { all: list.length };
+  for (const k of Object.keys(STATUS)) counts[k] = list.filter((o) => o.status === k).length;
+  if (state.orderFilter !== 'all') list = list.filter((o) => o.status === state.orderFilter);
+  if (q) list = list.filter((o) => String(o.no).includes(q.replace('#', '')) || o.customer.name.includes(q) || (nq.length >= 3 && normPhone(o.customer.phone).includes(nq)));
+  const chips = ['all', ...Object.keys(STATUS)];
+  return `
+  <div class="spread"><h1>الطلبات</h1>${can('orders.write') ? `<button class="btn primary" type="button" data-act="new-order">${icon('plus')} طلب جديد</button>` : ''}</div>
+  <div class="search">${icon('search')}<input class="input" id="q" type="search" placeholder="رقم الطلب، اسم الزبون أو الهاتف" value="${esc(state.q || '')}" aria-label="بحث في الطلبات"></div>
+  <div class="chips" role="group" aria-label="تصفية حسب الحالة">
+    ${chips.map((k) => `<button class="chip" type="button" data-filter="${k}" aria-pressed="${state.orderFilter === k}">${k === 'all' ? 'الكل' : STATUS[k].l}<b class="num">${counts[k]}</b></button>`).join('')}
+  </div>
+  ${orderList(list.slice(0, 80))}
+  ${list.length > 80 ? `<p class="sub">تُعرض أحدث 80 نتيجة. استخدم البحث للوصول لطلب أقدم.</p>` : ''}`;
+}
+
+function viewProducts() {
+  const s = store();
+  const q = (state.pq || '').trim();
+  const list = s.products.filter((p) => !q || p.name.includes(q) || p.category.includes(q));
+  return `
+  <div class="spread"><h1>المنتجات</h1>${can('products.write') ? `<button class="btn primary" type="button" data-act="new-product">${icon('plus')} منتج جديد</button>` : ''}</div>
+  <div class="search">${icon('search')}<input class="input" id="pq" type="search" placeholder="اسم المنتج أو التصنيف" value="${esc(q)}" aria-label="بحث في المنتجات"></div>
+  ${list.length ? `<div class="list">${list.map((p) => {
+    const prices = p.variants.map((v) => v.price);
+    const lo = Math.min(...prices), hi = Math.max(...prices);
+    return `<button class="item" type="button" data-product="${p.id}">
+      ${tile(p, 'thumb')}
+      <div class="grow"><div class="trunc">${esc(p.name)}</div>
+        <div class="meta">${esc(p.category)} · ${p.variants.length} خيار · المخزون <span class="num">${totalStock(p)}</span></div></div>
+      <div style="text-align:left"><div>${lo === hi ? money(lo) : `${money(lo)}+`}</div>
+        ${!p.active ? '<span class="tag">مخفي</span>' : isLow(p) ? '<span class="tag warn">قليل</span>' : ''}</div>
+    </button>`;
+  }).join('')}</div>` : `<div class="list"><div class="empty">لا توجد منتجات بهذا الاسم.</div></div>`}`;
+}
+
+function viewCustomers() {
+  const s = store();
+  const q = (state.cq || '').trim();
+  const nq = normPhone(q);
+  const list = customersOf(s).filter((c) => !q || c.name.includes(q) || (nq.length >= 3 && c.phone.includes(nq)));
+  return `
+  <h1>الزبائن</h1>
+  <p class="sub" style="margin-top:-8px">يُنشأ ملف الزبون تلقائياً من رقم هاتفه عند أول طلب.</p>
+  <div class="search">${icon('search')}<input class="input" id="cq" type="search" placeholder="الاسم أو الهاتف" value="${esc(q)}" aria-label="بحث في الزبائن"></div>
+  ${list.length ? `<div class="list">${list.slice(0, 100).map((c) => `
+    <button class="item" type="button" data-customer="${esc(c.phone)}">
+      <div class="grow"><div class="trunc">${esc(c.name)}</div>
+        <div class="meta"><span class="num">${esc(c.phone)}</span> · ${esc(c.city)} · ${c.orders.length} طلب</div></div>
+      <div style="text-align:left"><div>${money(c.spent)}</div><div class="meta">${ago(c.last)}</div></div>
+    </button>`).join('')}</div>` : `<div class="list"><div class="empty">لا يوجد زبائن بعد.</div></div>`}`;
+}
+
+function viewReports() {
+  const s = store();
+  const keys = [];
+  const d = new Date();
+  for (let i = 0; i < 3; i++) keys.push(monthKey(new Date(d.getFullYear(), d.getMonth() - i, 15).getTime()));
+  const key = state.month && keys.includes(state.month) ? state.month : keys[0];
+  const r = monthReport(s, key);
+  const stg = stagnant(s);
+  return `
+  <div class="spread"><h1>الأرباح</h1>
+    <select class="input" id="monthSel" style="width:auto" aria-label="الشهر">${keys.map((k) => `<option value="${k}" ${k === key ? 'selected' : ''}>${monthLabel(k)}</option>`).join('')}</select></div>
+  <div class="panel">
+    <table class="ledger">
+      <tr><td>المبيعات (طلبات مُسلَّمة: <span class="num">${r.delivered.length}</span>)</td><td>${money(r.revenue)}</td></tr>
+      <tr class="minus"><td>تكلفة البضاعة المباعة</td><td>${money(r.cogs)}</td></tr>
+      <tr><td>الربح الإجمالي</td><td>${money(r.gross)}</td></tr>
+      <tr class="minus"><td>المصروفات</td><td>${money(r.exp)}</td></tr>
+      <tr class="sum"><td>صافي الربح</td><td style="color:${r.net < 0 ? 'var(--bad)' : 'var(--good)'}">${money(r.net)}</td></tr>
+    </table>
+    <p class="note">المبيعات تُحسب عند التسليم للزبون فقط، بعد الخصم ومن دون أجرة التوصيل لأنها تذهب لشركة التوصيل. المرتجعات هذا الشهر: <span class="num">${r.returned.length}</span> طلب.</p>
+  </div>
+
+  <h2>الأكثر مبيعاً</h2>
+  ${r.top.length ? `<div class="list">${r.top.map((t, i) => `<div class="item"><span class="ono num">${i + 1}</span><div class="grow trunc">${esc(t.name)}</div><div class="meta"><span class="num">${t.qty}</span> قطعة</div><div style="min-width:110px;text-align:left">${money(t.revenue)}</div></div>`).join('')}</div>` : '<div class="list"><div class="empty">لا توجد مبيعات مُسلَّمة في هذا الشهر.</div></div>'}
+
+  <h2>منتجات راكدة <span class="sub">بلا طلبات خلال 30 يوماً</span></h2>
+  ${stg.length ? `<div class="list">${stg.map((p) => `<button class="item" type="button" data-product="${p.id}">${tile(p, 'thumb')}<div class="grow trunc">${esc(p.name)}</div><div class="meta">في المخزن <span class="num">${totalStock(p)}</span> · قيمتها ${money(p.variants.reduce((t, v) => t + v.cost * v.stock, 0))}</div></button>`).join('')}</div>` : '<div class="list"><div class="empty">كل المنتجات تتحرك. ممتاز.</div></div>'}
+
+  <div class="spread"><h2>مصروفات ${monthLabel(key)}</h2><button class="btn" type="button" data-act="new-expense">${icon('plus')} مصروف</button></div>
+  ${r.expenses.length ? `<div class="list">${r.expenses.slice().sort((a, b) => b.at - a.at).map((e) => `<div class="item"><div class="grow"><div>${esc(e.category)}</div><div class="meta">${esc(e.note)} · ${dateText(e.at)}</div></div><div>${money(e.amount)}</div></div>`).join('')}</div>` : '<div class="list"><div class="empty">لا مصروفات مسجّلة لهذا الشهر.</div></div>'}`;
+}
+
+function viewSettings() {
+  const s = store();
+  return `
+  <h1>إعدادات المتجر</h1>
+  ${linkCard(s)}
+  <div class="panel row" style="margin-bottom:14px">
+    <div class="store-mark" style="width:64px;height:64px;border-radius:16px;font-size:26px">${s.logo ? `<img data-img="${s.logo}" alt="الشعار">` : esc(s.name.trim().charAt(0))}</div>
+    <div class="grow"><div>شعار المتجر</div><div class="sub">يظهر في أعلى لوحة التحكم وفي صفحة متجرك</div></div>
+    <div class="row" style="flex-direction:column;align-items:stretch;gap:6px">
+      <label class="btn upload">${icon('camera')} ${s.logo ? 'تغيير' : 'رفع شعار'}<input type="file" id="logoFile" accept="image/*" aria-label="رفع شعار المتجر"></label>
+      ${s.logo ? '<button class="btn danger" type="button" data-act="remove-logo">إزالة</button>' : ''}
+    </div>
+  </div>
+  <form class="panel" id="settingsForm" novalidate>
+    <div class="field"><label for="setName">اسم المتجر</label><input class="input" id="setName" value="${esc(s.name)}" maxlength="80" required></div>
+    <div class="field"><label for="setTag">وصف قصير يظهر للزبائن</label><input class="input" id="setTag" value="${esc(s.tagline || '')}" maxlength="120"></div>
+    <div class="grid2">
+      <div class="field"><label for="setPhone">هاتف المتجر</label><input class="input num" id="setPhone" inputmode="tel" value="${esc(s.phone || '')}" style="text-align:right"></div>
+      <div class="field"><label for="setColor">لون المتجر</label><input class="input" id="setColor" type="color" value="${esc(s.color)}" style="padding:4px"></div>
+    </div>
+    <div class="field"><label for="setSlug">اسم الرابط (حروف إنجليزية صغيرة وأرقام وشرطة)</label>
+      <div class="row" dir="ltr"><span class="sub" style="white-space:nowrap">#/s/</span><input class="input" id="setSlug" maxlength="40" value="${esc(s.slug)}" dir="ltr" autocapitalize="off" spellcheck="false"></div>
+      <small class="sub">إذا غيّرته، الرابط القديم يتوقف عن العمل.</small></div>
+    <div id="setErr" class="err" hidden></div>
+    <button class="btn primary block" type="submit">حفظ التغييرات</button>
+  </form>
+
+  <h2>الاشتراك</h2>
+  <div class="panel spread"><div><div>تجربة الخطة الاحترافية</div><div class="sub">تنتهي بعد 14 يوماً ثم ينتقل المتجر للخطة المجانية دون حذف أي بيانات.</div></div></div>
+
+  <h2>الموظفون والصلاحيات</h2>
+  <div class="panel">
+    <p style="margin-top:0">جرّب تغيير الدور من أعلى الصفحة لترى ما يراه كل موظف. موظف الطلبات لا يرى سعر التكلفة ولا الأرباح.</p>
+    <p class="sub" style="margin-bottom:0">في النظام الحقيقي تُفرض هذه الصلاحيات في الخادم وقاعدة البيانات، وليس بإخفاء الأزرار فقط.</p>
+  </div>
+
+  <h2>الحساب</h2>
+  <div class="panel spread"><div><div>${esc(currentUser().name)}</div><div class="sub" dir="ltr" style="text-align:right">${esc(currentUser().email)}</div></div>
+    <button class="btn danger" type="button" data-act="logout">تسجيل الخروج</button></div>`;
+}
+
+/* ---------------- sheets ---------------- */
+function orderSheet(id) {
+  const s = store();
+  const o = s.orders.find((x) => x.id === id);
+  if (!o) return;
+  const sub = orderSubtotal(o);
+  const nexts = can('orders.write') ? NEXT[o.status] : [];
+  openSheet(`${sheetHead(`طلب <span class="num">#${o.no}</span> ${badge(o.status)}`)}
+    <div class="cust">
+      <div class="spread"><b>${esc(o.customer.name)}</b><a class="btn" href="tel:${esc(normPhone(o.customer.phone))}" style="min-height:34px;padding:4px 12px">${icon('phone')} اتصال</a></div>
+      <div class="num" style="margin-top:4px">${esc(o.customer.phone)}</div>
+      <div class="sub">${esc(o.customer.city)} — ${esc(o.customer.address)}</div>
+      ${o.note ? `<div class="sub">ملاحظة: ${esc(o.note)}</div>` : ''}
+    </div>
+    <table class="lines">${o.items.map((it) => `<tr><td>${esc(it.name)}<div class="sub">${esc(it.label)} × <span class="num">${it.qty}</span></div></td><td>${money(it.price * it.qty)}</td></tr>`).join('')}</table>
+    <div style="margin-top:8px">
+      <div class="tot"><span>المجموع</span><span>${money(sub)}</span></div>
+      ${o.discount ? `<div class="tot"><span>خصم</span><span>− ${money(o.discount)}</span></div>` : ''}
+      <div class="tot"><span>أجرة التوصيل</span><span>${money(o.delivery)}</span></div>
+      <div class="tot grand"><span>المبلغ المطلوب من الزبون</span><span>${money(orderTotal(o))}</span></div>
+      ${can('cost') ? `<div class="tot"><span>ربح الطلب (قبل المصروفات)</span><span>${money(Math.max(0, sub - o.discount) - orderCost(o))}</span></div>` : ''}
+    </div>
+    ${nexts.length ? `<div class="actions">${nexts.map((t) => `<button class="btn ${t === 'canceled' || t === 'returned' ? 'danger' : 'primary'}" type="button" data-to="${t}">${ACTION_LABEL[t]}</button>`).join('')}</div>` : ''}
+    <div class="actions">
+      <button class="btn" type="button" data-act="copy-order">${icon('copy')} نسخ للواتساب</button>
+      <button class="btn" type="button" data-act="print-order">${icon('print')} طباعة الفاتورة</button>
+    </div>
+    <h2 style="margin-top:20px">سجل الطلب</h2>
+    <ol class="timeline">${o.history.slice().reverse().map((h) => `<li style="--c:${STATUS[h.to].c}">${STATUS[h.to].l}<small>${dateText(h.at)} ${new Date(h.at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} · ${esc(h.by || '')}</small></li>`).join('')}</ol>
+    <p class="sub">المصدر: ${o.source === 'storefront' ? 'واجهة المتجر' : 'إدخال يدوي'}</p>`,
+  (sh) => {
+    $$('[data-to]', sh).forEach((b) => b.addEventListener('click', async () => {
+      const to = b.dataset.to;
+      if (to === 'canceled' || to === 'returned') {
+        const ok = await confirmSheet(ACTION_LABEL[to], STOCK_OUT.has(o.status) ? 'ستعود الكميات إلى المخزون ويُسجَّل ذلك في حركات المخزون.' : 'لن يمكن التراجع عن هذه الخطوة.', ACTION_LABEL[to], true);
+        if (!ok) { orderSheet(id); return; }
+      }
+      if (changeStatus(o, to)) {
+        toast(`الطلب #${o.no}: ${STATUS[to].l}`);
+        render();
+        orderSheet(id);
+      }
+    }));
+    sh.querySelector('[data-act="copy-order"]').addEventListener('click', async () => {
+      const txt = [`طلب #${o.no} — ${s.name}`, `${o.customer.name} | ${normPhone(o.customer.phone)}`, `${o.customer.city} — ${o.customer.address}`, '',
+        ...o.items.map((it) => `• ${it.name} (${it.label}) × ${it.qty} = ${moneyText(it.price * it.qty)}`), '',
+        o.discount ? `خصم: ${moneyText(o.discount)}` : null, `التوصيل: ${moneyText(o.delivery)}`, `المطلوب: ${moneyText(orderTotal(o))}`].filter((x) => x !== null).join('\n');
+      toast((await copyText(txt)) ? 'نُسخت تفاصيل الطلب' : 'تعذّر النسخ، انسخ يدوياً', false);
+    });
+    sh.querySelector('[data-act="print-order"]').addEventListener('click', () => printOrder(o));
+  });
+}
+
+function printOrder(o) {
+  const s = store();
+  $('#print').innerHTML = `<h2 style="margin:0">${esc(s.name)}</h2><p>${esc(s.phone || '')}</p>
+    <p><b>فاتورة طلب #${o.no}</b> — ${dateText(o.createdAt)}</p>
+    <p>${esc(o.customer.name)} — ${esc(normPhone(o.customer.phone))}<br>${esc(o.customer.city)} — ${esc(o.customer.address)}</p>
+    <table><tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr>
+    ${o.items.map((it) => `<tr><td>${esc(it.name)} (${esc(it.label)})</td><td>${it.qty}</td><td>${moneyText(it.price)}</td><td>${moneyText(it.price * it.qty)}</td></tr>`).join('')}</table>
+    <p>المجموع: ${moneyText(orderSubtotal(o))}${o.discount ? `<br>خصم: ${moneyText(o.discount)}` : ''}<br>التوصيل: ${moneyText(o.delivery)}<br><b>المطلوب: ${moneyText(orderTotal(o))}</b></p>`;
+  window.print();
+}
+
+function newOrderSheet(prefill) {
+  if (!can('orders.write')) return fail('لا تملك صلاحية إضافة طلبات');
+  const s = store();
+  const draft = { lines: [], discount: 0, delivery: 5000 };
+  const variants = s.products.filter((p) => p.active).flatMap((p) => p.variants.map((v) => ({ p, v })));
+  openSheet(`${sheetHead('طلب جديد')}
+    <form id="orderForm" novalidate>
+      <div class="field"><label for="oPhone">هاتف الزبون</label><input class="input num" id="oPhone" inputmode="tel" placeholder="07XXXXXXXXX" style="text-align:right" value="${esc(prefill ? prefill.phone : '')}"></div>
+      <div class="field"><label for="oName">اسم الزبون</label><input class="input" id="oName" maxlength="80" value="${esc(prefill ? prefill.name : '')}"></div>
+      <div class="grid2">
+        <div class="field"><label for="oCity">المحافظة</label><select class="input" id="oCity">${CITIES.map((c) => `<option ${prefill && prefill.city === c ? 'selected' : ''}>${c}</option>`).join('')}</select></div>
+        <div class="field"><label for="oDelivery">أجرة التوصيل</label><input class="input num" id="oDelivery" inputmode="numeric" value="5000" style="text-align:right"></div>
+      </div>
+      <div class="field"><label for="oAddr">العنوان</label><input class="input" id="oAddr" maxlength="200" placeholder="المنطقة، أقرب نقطة دالة" value="${esc(prefill ? prefill.address : '')}"></div>
+      <div class="field"><label for="oVariant">إضافة منتج</label>
+        <div class="row"><select class="input grow" id="oVariant">${variants.map(({ p, v }) => `<option value="${v.id}" ${v.stock <= 0 ? 'disabled' : ''}>${esc(p.name)} — ${esc(v.label)} (${v.stock > 0 ? `متوفر ${v.stock}` : 'نفد'})</option>`).join('')}</select>
+        <button class="btn" type="button" id="oAdd">إضافة</button></div></div>
+      <div id="oLines"></div>
+      <div class="grid2" style="margin-top:10px">
+        <div class="field"><label for="oDiscount">خصم</label><input class="input num" id="oDiscount" inputmode="numeric" value="0" style="text-align:right"></div>
+        <div class="field"><label for="oNote">ملاحظة</label><input class="input" id="oNote" maxlength="200"></div>
+      </div>
+      <div class="tot grand"><span>المبلغ المطلوب</span><span id="oTotal">${money(0)}</span></div>
+      <div id="oErr" class="err" hidden></div>
+      <button class="btn primary block" type="submit" style="margin-top:12px">حفظ الطلب</button>
+    </form>`,
+  (sh) => {
+    const num = (id) => Math.max(0, Math.round(Number(String(sh.querySelector(id).value).replace(/[^\d]/g, '')) || 0));
+    const draw = () => {
+      sh.querySelector('#oLines').innerHTML = draft.lines.map((l, i) => {
+        const f = findVariant(s, l.variantId);
+        return `<div class="oline"><div class="grow">${esc(f.p.name)}<div class="sub">${esc(f.v.label)} · ${money(f.v.price)}</div></div>
+          <div class="qty"><button type="button" data-dec="${i}" aria-label="إنقاص">−</button><span class="num">${l.qty}</span><button type="button" data-inc="${i}" aria-label="زيادة">+</button></div>
+          <button class="icon-btn" type="button" data-rm="${i}" aria-label="حذف" style="width:32px;height:32px">${icon('close')}</button></div>`;
+      }).join('') || '<p class="sub">لم تُضف منتجات بعد.</p>';
+      const sub = draft.lines.reduce((t, l) => t + findVariant(s, l.variantId).v.price * l.qty, 0);
+      sh.querySelector('#oTotal').innerHTML = money(Math.max(0, sub - num('#oDiscount')) + num('#oDelivery'));
+    };
+    draw();
+    sh.querySelector('#oAdd').addEventListener('click', () => {
+      const vid = sh.querySelector('#oVariant').value;
+      if (!vid) return;
+      const ex = draft.lines.find((l) => l.variantId === vid);
+      if (ex) ex.qty++; else draft.lines.push({ variantId: vid, qty: 1 });
+      draw();
+    });
+    sh.querySelector('#oLines').addEventListener('click', (e) => {
+      const t = e.target.closest('button');
+      if (!t) return;
+      if (t.dataset.inc != null) draft.lines[+t.dataset.inc].qty++;
+      if (t.dataset.dec != null) { const l = draft.lines[+t.dataset.dec]; l.qty = Math.max(1, l.qty - 1); }
+      if (t.dataset.rm != null) draft.lines.splice(+t.dataset.rm, 1);
+      draw();
+    });
+    ['#oDiscount', '#oDelivery'].forEach((id) => sh.querySelector(id).addEventListener('input', draw));
+    sh.querySelector('#oCity').addEventListener('change', (e) => { sh.querySelector('#oDelivery').value = e.target.value === 'بغداد' ? 5000 : 6000; draw(); });
+    sh.querySelector('#oPhone').addEventListener('change', (e) => {
+      const c = customersOf(s).find((x) => x.phone === normPhone(e.target.value));
+      if (!c) return;
+      const n = sh.querySelector('#oName'), a = sh.querySelector('#oAddr');
+      if (!n.value) n.value = c.name;
+      if (!a.value) a.value = c.address;
+      sh.querySelector('#oCity').value = c.city;
+      toast(`زبون سابق: ${c.orders.length} طلب`);
+    });
+    sh.querySelector('#orderForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const errEl = sh.querySelector('#oErr');
+      const phone = sh.querySelector('#oPhone').value, name = sh.querySelector('#oName').value.trim();
+      const address = sh.querySelector('#oAddr').value.trim();
+      let err = '';
+      if (!validPhone(phone)) err = 'رقم الهاتف يجب أن يكون 11 رقماً ويبدأ بـ 07';
+      else if (!name) err = 'اكتب اسم الزبون';
+      else if (!address) err = 'اكتب العنوان';
+      else if (!draft.lines.length) err = 'أضف منتجاً واحداً على الأقل';
+      const sub = draft.lines.reduce((t, l) => t + findVariant(s, l.variantId).v.price * l.qty, 0);
+      if (!err && num('#oDiscount') > sub) err = 'الخصم أكبر من مجموع المنتجات';
+      if (err) { errEl.textContent = err; errEl.hidden = false; return; }
+      const items = draft.lines.map((l) => { const { p, v } = findVariant(s, l.variantId); return { productId: p.id, variantId: v.id, name: p.name, label: v.label, price: v.price, cost: v.cost, qty: l.qty }; });
+      const o = createOrder(s, { customer: { name, phone: normPhone(phone), city: sh.querySelector('#oCity').value, address }, items, discount: num('#oDiscount'), delivery: num('#oDelivery'), note: sh.querySelector('#oNote').value.trim() }, 'manual', ROLES[state.role].l);
+      closeSheet();
+      toast(`سُجّل الطلب #${o.no}`);
+      render();
+    });
+  });
+}
+
+function productSheet(id) {
+  const s = store();
+  const existing = id ? s.products.find((p) => p.id === id) : null;
+  const edit = can('products.write');
+  const showCost = can('cost');
+  const p = existing ? JSON.parse(JSON.stringify(existing)) : { id: null, images: [], name: '', category: '', desc: '', active: true, low: 3, color: TILE_COLORS[s.products.length % TILE_COLORS.length], variants: [{ id: uid(), label: '', price: 0, cost: 0, stock: 0, fresh: true }] };
+  const moves = existing ? s.movements.filter((m) => p.variants.some((v) => v.id === m.variantId)).sort((a, b) => b.at - a.at).slice(0, 12) : [];
+  const vLabel = (vid) => { const v = p.variants.find((x) => x.id === vid); return v ? v.label : ''; };
+  const dis = edit ? '' : 'disabled';
+  openSheet(`${sheetHead(existing ? esc(existing.name) : 'منتج جديد')}
+    <form id="pForm" novalidate>
+      <div class="field"><label for="pName">اسم المنتج</label><input class="input" id="pName" maxlength="80" value="${esc(p.name)}" ${dis}></div>
+      <div class="grid2">
+        <div class="field"><label for="pCat">التصنيف</label><input class="input" id="pCat" maxlength="40" list="cats" value="${esc(p.category)}" ${dis}>
+          <datalist id="cats">${Array.from(new Set(s.products.map((x) => x.category))).map((c) => `<option value="${esc(c)}">`).join('')}</datalist></div>
+        <div class="field"><label for="pLow">نبّهني عندما يصل المخزون إلى</label><input class="input num" id="pLow" inputmode="numeric" value="${p.low}" style="text-align:right" ${dis}></div>
+      </div>
+      <div class="field"><label>صور المنتج <span class="sub">حتى ${IMG_MAX} صور، الأولى هي الغلاف</span></label>
+        <div class="pimgs" id="pImgs"></div>
+        ${edit ? `<label class="btn upload" id="pUpBtn" style="align-self:flex-start">${icon('camera')} إضافة صور<input type="file" id="pFile" accept="image/*" multiple aria-label="إضافة صور المنتج"></label>` : ''}
+      </div>
+      <div class="field"><label for="pDesc">الوصف</label><textarea class="input" id="pDesc" maxlength="500" ${dis}>${esc(p.desc)}</textarea></div>
+      <div class="field"><label>الخيارات (لون، مقاس، حجم)</label>
+        <div class="vrow head"><span>الخيار</span><span>سعر البيع</span><span>${showCost ? 'التكلفة' : ''}</span><span>المخزون</span><span></span></div>
+        <div id="pVars"></div>
+        ${edit ? '<button class="btn" type="button" id="pAddVar" style="margin-top:4px">+ خيار</button>' : ''}
+      </div>
+      <div class="field" id="pReasonWrap" hidden><label for="pReason">سبب تعديل المخزون</label><input class="input" id="pReason" maxlength="120" placeholder="مثال: جرد، تالف، استلام بضاعة"></div>
+      <label class="row" style="margin:6px 0 12px"><input type="checkbox" id="pActive" ${p.active ? 'checked' : ''} ${dis}> يظهر للزبائن في واجهة المتجر</label>
+      <div id="pErr" class="err" hidden></div>
+      ${edit ? `<button class="btn primary block" type="submit">${existing ? 'حفظ التغييرات' : 'إضافة المنتج'}</button>` : '<p class="sub">عرض فقط: دورك لا يسمح بتعديل المنتجات.</p>'}
+    </form>
+    ${moves.length ? `<h2>آخر حركات المخزون</h2><div class="list">${moves.map((m) => `<div class="item"><div class="grow"><div>${esc(m.reason)}</div><div class="meta">${esc(vLabel(m.variantId))} · ${dateText(m.at)} · ${esc(m.by)}</div></div><b class="num" style="color:${m.qty < 0 ? 'var(--bad)' : 'var(--good)'}">${m.qty > 0 ? '+' : ''}${m.qty}</b></div>`).join('')}</div>` : ''}`,
+  (sh) => {
+    const orig = new Map((existing ? existing.variants : []).map((v) => [v.id, v.stock]));
+    const draw = () => {
+      sh.querySelector('#pVars').innerHTML = p.variants.map((v, i) => `<div class="vrow">
+        <input class="input" data-k="label" data-i="${i}" value="${esc(v.label)}" placeholder="مثال: أسود / L" aria-label="اسم الخيار" ${dis}>
+        <input class="input num" data-k="price" data-i="${i}" inputmode="numeric" value="${v.price}" aria-label="سعر البيع" style="text-align:right" ${dis}>
+        ${showCost ? `<input class="input num" data-k="cost" data-i="${i}" inputmode="numeric" value="${v.cost}" aria-label="التكلفة" style="text-align:right" ${dis}>` : '<span></span>'}
+        <input class="input num" data-k="stock" data-i="${i}" inputmode="numeric" value="${v.stock}" aria-label="المخزون" style="text-align:right" ${dis}>
+        ${edit && v.fresh ? `<button class="x" type="button" data-rmv="${i}" aria-label="حذف الخيار">×</button>` : '<span></span>'}
+      </div>`).join('');
+    };
+    if (!Array.isArray(p.images)) p.images = [];
+    const drawImgs = () => {
+      sh.querySelector('#pImgs').innerHTML = p.images.length ? p.images.map((id, i) => `<div class="pimg ${i === 0 ? 'first' : ''}"><img data-img="${id}" alt="صورة ${i + 1}">
+        ${edit ? `<button class="x" type="button" data-rmimg="${i}" aria-label="حذف الصورة">×</button>${i > 0 ? `<button class="cover" type="button" data-cover="${i}">اجعلها الغلاف</button>` : ''}` : ''}</div>`).join('')
+        : '<p class="sub" style="grid-column:1/-1;margin:0">لا توجد صور بعد.</p>';
+      const up = sh.querySelector('#pUpBtn');
+      if (up) up.hidden = p.images.length >= IMG_MAX;
+    };
+    drawImgs();
+    sh.querySelector('#pImgs').addEventListener('click', (e) => {
+      const b = e.target.closest('button');
+      if (!b) return;
+      if (b.dataset.rmimg != null) p.images.splice(+b.dataset.rmimg, 1);
+      if (b.dataset.cover != null) { const [im] = p.images.splice(+b.dataset.cover, 1); p.images.unshift(im); }
+      drawImgs();
+    });
+    const pf = sh.querySelector('#pFile');
+    if (pf) pf.addEventListener('change', async () => {
+      const room = IMG_MAX - p.images.length;
+      if (room <= 0) return;
+      toast('جارِ تجهيز الصور…');
+      const { ids, skipped } = await addImages(pf.files, room, 1000);
+      pf.value = '';
+      p.images.push(...ids);
+      drawImgs();
+      toast(skipped ? `أُضيفت ${ids.length} صورة، وتُركت ${skipped} (ليست صورة أو تجاوزت الحد)` : `أُضيفت ${ids.length} صورة`, !!skipped && !ids.length);
+    });
+    const stockChanged = () => p.variants.some((v) => orig.has(v.id) && orig.get(v.id) !== v.stock);
+    draw();
+    sh.querySelector('#pVars').addEventListener('input', (e) => {
+      const t = e.target;
+      if (t.dataset.i == null) return;
+      const v = p.variants[+t.dataset.i];
+      v[t.dataset.k] = t.dataset.k === 'label' ? t.value : Math.max(0, Math.round(Number(t.value.replace(/[^\d]/g, '')) || 0));
+      sh.querySelector('#pReasonWrap').hidden = !stockChanged();
+    });
+    sh.querySelector('#pVars').addEventListener('click', (e) => {
+      const t = e.target.closest('[data-rmv]');
+      if (!t || p.variants.length <= 1) return;
+      p.variants.splice(+t.dataset.rmv, 1);
+      draw();
+    });
+    const add = sh.querySelector('#pAddVar');
+    if (add) add.addEventListener('click', () => { p.variants.push({ id: uid(), label: '', price: p.variants[0] ? p.variants[0].price : 0, cost: p.variants[0] ? p.variants[0].cost : 0, stock: 0, fresh: true }); draw(); });
+    sh.querySelector('#pForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!edit) return;
+      const errEl = sh.querySelector('#pErr');
+      const name = sh.querySelector('#pName').value.trim();
+      const reason = sh.querySelector('#pReason').value.trim();
+      let err = '';
+      if (!name) err = 'اكتب اسم المنتج';
+      else if (p.variants.some((v) => !v.label.trim())) err = 'اكتب اسماً لكل خيار';
+      else if (new Set(p.variants.map((v) => v.label.trim())).size !== p.variants.length) err = 'يوجد خياران بنفس الاسم';
+      else if (p.variants.some((v) => v.price <= 0)) err = 'سعر البيع يجب أن يكون أكبر من صفر';
+      else if (showCost && p.variants.some((v) => v.cost > v.price)) err = 'التكلفة أكبر من سعر البيع في أحد الخيارات';
+      else if (stockChanged() && !reason) err = 'اكتب سبب تعديل المخزون';
+      if (err) { errEl.textContent = err; errEl.hidden = false; return; }
+      const by = ROLES[state.role].l;
+      const now = Date.now();
+      const clean = { ...p, name, category: sh.querySelector('#pCat').value.trim() || 'عام', desc: sh.querySelector('#pDesc').value.trim(), low: Math.max(0, Math.round(Number(sh.querySelector('#pLow').value) || 0)), active: sh.querySelector('#pActive').checked };
+      clean.variants = p.variants.map((v) => {
+        const before = orig.has(v.id) ? orig.get(v.id) : 0;
+        const diff = v.stock - before;
+        if (diff !== 0) s.movements.push({ id: uid(), variantId: v.id, qty: diff, reason: orig.has(v.id) ? `تعديل يدوي: ${reason}` : 'رصيد افتتاحي', at: now, by });
+        return { id: v.id, label: v.label.trim(), price: v.price, cost: showCost ? v.cost : (existing && existing.variants.find((x) => x.id === v.id) || { cost: 0 }).cost, stock: v.stock };
+      });
+      clean.images = p.images.slice();
+      const dropped = ((existing && existing.images) || []).filter((im) => !clean.images.includes(im));
+      if (dropped.length) imgDel(dropped);
+      if (existing) { Object.assign(existing, clean); } else { clean.id = uid(); s.products.push(clean); }
+      save();
+      closeSheet();
+      toast(existing ? 'حُفظت التغييرات' : 'أُضيف المنتج');
+      render();
+    });
+  });
+}
+
+function customerSheet(phone) {
+  const s = store();
+  const c = customersOf(s).find((x) => x.phone === phone);
+  if (!c) return;
+  openSheet(`${sheetHead(esc(c.name))}
+    <div class="cust"><div class="num">${esc(c.phone)}</div><div class="sub">${esc(c.city)} — ${esc(c.address)}</div></div>
+    <dl class="money" style="margin-top:0">
+      <div><dt>عدد الطلبات</dt><dd><span class="num">${c.orders.length}</span></dd></div>
+      <div><dt>مشتريات مُسلَّمة</dt><dd>${money(c.spent)}</dd></div>
+      <div><dt>مرتجعة</dt><dd><span class="num">${c.orders.filter((o) => o.status === 'returned').length}</span></dd></div>
+      <div><dt>آخر طلب</dt><dd style="font-size:15px">${ago(c.last)}</dd></div>
+    </dl>
+    <div class="field" style="margin-top:14px"><label for="cNote">ملاحظات عن الزبون (تظهر لموظفي المتجر فقط)</label>
+      <textarea class="input" id="cNote" maxlength="500" ${can('orders.write') ? '' : 'disabled'}>${esc(s.notes[c.phone] || '')}</textarea></div>
+    ${can('orders.write') ? '<button class="btn" type="button" id="cSave">حفظ الملاحظة</button> <button class="btn primary" type="button" id="cOrder">طلب جديد لهذا الزبون</button>' : ''}
+    <h2>طلباته</h2>${orderList(c.orders.slice().sort((a, b) => b.createdAt - a.createdAt))}`,
+  (sh) => {
+    const sv = sh.querySelector('#cSave');
+    if (sv) sv.addEventListener('click', () => { s.notes[c.phone] = sh.querySelector('#cNote').value.trim(); save(); toast('حُفظت الملاحظة'); });
+    const no = sh.querySelector('#cOrder');
+    if (no) no.addEventListener('click', () => newOrderSheet({ phone: c.phone, name: c.name, city: c.city, address: c.address }));
+  });
+}
+
+function expenseSheet() {
+  if (!can('reports')) return;
+  const s = store();
+  openSheet(`${sheetHead('مصروف جديد')}
+    <form id="eForm" novalidate>
+      <div class="grid2">
+        <div class="field"><label for="eCat">النوع</label><input class="input" id="eCat" list="ecats" maxlength="40" placeholder="إعلانات">
+          <datalist id="ecats"><option value="إعلانات"><option value="إيجار"><option value="رواتب"><option value="تغليف"><option value="أخرى"></datalist></div>
+        <div class="field"><label for="eAmt">المبلغ (د.ع)</label><input class="input num" id="eAmt" inputmode="numeric" style="text-align:right"></div>
+      </div>
+      <div class="field"><label for="eNote">تفاصيل</label><input class="input" id="eNote" maxlength="120"></div>
+      <div id="eErr" class="err" hidden></div>
+      <button class="btn primary block" type="submit">إضافة المصروف</button>
+    </form>`,
+  (sh) => {
+    sh.querySelector('#eForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const cat = sh.querySelector('#eCat').value.trim();
+      const amt = Math.round(Number(sh.querySelector('#eAmt').value.replace(/[^\d]/g, '')) || 0);
+      const errEl = sh.querySelector('#eErr');
+      if (!cat || amt <= 0) { errEl.textContent = !cat ? 'اختر نوع المصروف' : 'اكتب مبلغاً أكبر من صفر'; errEl.hidden = false; return; }
+      s.expenses.push({ id: uid(), category: cat, amount: amt, at: Date.now(), note: sh.querySelector('#eNote').value.trim() });
+      state.month = monthKey(Date.now());
+      save(); closeSheet(); toast('أُضيف المصروف'); render();
+    });
+  });
+}
+
+/* ---------------- storefront (customer view) ---------------- */
+let cart = [];
+let cartStore = null;
+let sfStore = null;   // the store whose public page is open
+let sfPublic = false; // true when opened from a public /s/slug link (no login)
+function openStorefront(target, isPublic) {
+  const s = target || store();
+  sfStore = s; sfPublic = !!isPublic;
+  if (cartStore !== s.id) { cart = []; cartStore = s.id; }
+  const sf = $('#storefront');
+  const items = s.products.filter((p) => p.active);
+  sf.innerHTML = `
+    <div class="sf-url"><span class="num trunc" dir="ltr">${esc(publicLink(s))}</span>
+      ${sfPublic ? '<button type="button" data-act="close-storefront">دخول أصحاب المتاجر</button>'
+        : '<span class="row" style="gap:6px"><button type="button" data-act="copy-link">نسخ الرابط</button><button type="button" data-act="close-storefront">رجوع للوحة التحكم</button></span>'}</div>
+    <div class="sf-hero">${s.logo ? `<div class="sf-logo"><img data-img="${s.logo}" alt="شعار ${esc(s.name)}"></div>` : ''}<h2>${esc(s.name)}</h2><p>${esc(s.tagline || 'أهلاً بك في متجرنا')}</p></div>
+    <div class="sf-grid">${items.length ? items.map((p) => {
+      const lo = Math.min(...p.variants.map((v) => v.price));
+      const out = totalStock(p) <= 0;
+      return `<button class="sf-card" type="button" data-sfp="${p.id}">${tile(p, 'pic')}
+        <div class="txt"><div class="trunc">${esc(p.name)}</div><div class="sub">${out ? 'نفدت الكمية' : money(lo)}</div></div></button>`;
+    }).join('') : '<p class="sub">لا توجد منتجات معروضة بعد.</p>'}</div>
+    <div style="max-width:900px;margin:0 auto;padding:0 16px 110px">
+      <h2>تتبّع طلبك</h2>
+      <form id="trackForm" class="panel" novalidate>
+        <div class="grid2"><div class="field"><label for="tNo">رقم الطلب</label><input class="input num" id="tNo" inputmode="numeric" style="text-align:right"></div>
+        <div class="field"><label for="tPhone">رقم الهاتف</label><input class="input num" id="tPhone" inputmode="tel" style="text-align:right"></div></div>
+        <button class="btn block" type="submit">عرض حالة الطلب</button>
+        <div id="tOut" style="margin-top:10px"></div>
+      </form>
+    </div>
+    <div class="sf-cart" id="sfCart"></div>`;
+  sf.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  drawCart();
+  $('#trackForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const no = Number($('#tNo').value.replace(/[^\d]/g, ''));
+    const ph = normPhone($('#tPhone').value);
+    const o = s.orders.find((x) => x.no === no && normPhone(x.customer.phone) === ph);
+    // Same answer for "no such order" and "wrong phone", so order numbers can't be probed.
+    $('#tOut').innerHTML = o ? `طلب <span class="num">#${o.no}</span>: ${badge(o.status)}` : '<span class="err">لم نجد طلباً بهذا الرقم والهاتف.</span>';
+  });
+}
+function publicLink(s) { return `${location.href.split('#')[0]}#/s/${s.slug}`; }
+function closeStorefront() {
+  $('#storefront').classList.remove('open');
+  document.body.style.overflow = '';
+  sfStore = null; sfPublic = false;
+  if (location.hash.startsWith('#/s/')) history.replaceState(null, '', location.href.split('#')[0]);
+  render();
+}
+// Public store page: anyone with the link sees it without logging in.
+function routePublic() {
+  const m = /^#\/s\/([a-z0-9-]+)$/.exec(location.hash);
+  if (!m) return false;
+  const s = state.stores.find((x) => x.slug === m[1]);
+  if (!s) { toast('لا يوجد متجر بهذا الرابط', true); return false; }
+  openStorefront(s, true);
+  return true;
+}
+function drawCart() {
+  const s = sfStore;
+  const n = cart.reduce((t, l) => t + l.qty, 0);
+  const total = cart.reduce((t, l) => { const f = findVariant(s, l.variantId); return t + (f ? f.v.price * l.qty : 0); }, 0);
+  $('#sfCart').innerHTML = n ? `<button class="btn primary" type="button" data-act="checkout">السلة (<span class="num">${n}</span>) · ${money(total)}</button>` : '';
+}
+function sfProductSheet(id) {
+  const s = sfStore;
+  const p = s.products.find((x) => x.id === id);
+  if (!p) return;
+  let sel = (p.variants.find((v) => v.stock > 0) || {}).id;
+  openSheet(`${sheetHead(esc(p.name))}
+    ${p.images && p.images.length ? `<div class="gal-main"><img id="galMain" data-img="${p.images[0]}" alt="${esc(p.name)}"></div>
+      ${p.images.length > 1 ? `<div class="gal-thumbs">${p.images.map((im, i) => `<button type="button" data-gal="${im}" aria-pressed="${i === 0}" aria-label="صورة ${i + 1}"><img data-img="${im}" alt=""></button>`).join('')}</div>` : ''}`
+      : `<div class="pic" style="background:${p.color};aspect-ratio:16/9;border-radius:14px;display:grid;place-items:center;color:#fff;font-size:48px;font-weight:600">${esc(p.name.charAt(0))}</div>`}
+    <p>${esc(p.desc)}</p>
+    ${p.variants.length > 1 ? `<div class="sub">اختر:</div>` : ''}
+    <div class="opts" role="group" aria-label="الخيارات">${p.variants.map((v) => `<button class="opt" type="button" data-v="${v.id}" aria-pressed="${v.id === sel}" ${v.stock <= 0 ? 'disabled' : ''}>${esc(v.label)}</button>`).join('')}</div>
+    <div class="spread"><b id="sfPrice"></b><button class="btn primary" type="button" id="sfAdd">أضف للسلة</button></div>`,
+  (sh) => {
+    const upd = () => {
+      const v = p.variants.find((x) => x.id === sel);
+      sh.querySelector('#sfPrice').innerHTML = v ? money(v.price) : 'نفدت الكمية';
+      sh.querySelector('#sfAdd').disabled = !v;
+      $$('.opt', sh).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === sel)));
+    };
+    upd();
+    $$('.opt', sh).forEach((b) => b.addEventListener('click', () => { sel = b.dataset.v; upd(); }));
+    $$('[data-gal]', sh).forEach((b) => b.addEventListener('click', () => {
+      const main = sh.querySelector('#galMain');
+      main.removeAttribute('src');
+      main.dataset.img = b.dataset.gal;
+      hydrateImages(sh);
+      $$('[data-gal]', sh).forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    }));
+    sh.querySelector('#sfAdd').addEventListener('click', () => {
+      const v = p.variants.find((x) => x.id === sel);
+      const ex = cart.find((l) => l.variantId === sel);
+      const inCart = ex ? ex.qty : 0;
+      if (!v || inCart + 1 > v.stock) { toast('لا تتوفر كمية إضافية من هذا الخيار', true); return; }
+      if (ex) ex.qty++; else cart.push({ variantId: sel, qty: 1 });
+      closeSheet(); drawCart(); toast('أُضيف للسلة');
+    });
+  });
+}
+function checkoutSheet() {
+  const s = sfStore;
+  openSheet(`${sheetHead('إتمام الطلب')}
+    <div class="list" style="margin-bottom:12px">${cart.map((l, i) => { const f = findVariant(s, l.variantId); return `<div class="item"><div class="grow">${esc(f.p.name)}<div class="meta">${esc(f.v.label)} × <span class="num">${l.qty}</span></div></div><div>${money(f.v.price * l.qty)}</div><button class="icon-btn" type="button" data-cr="${i}" aria-label="حذف" style="width:32px;height:32px">${icon('close')}</button></div>`; }).join('')}</div>
+    <form id="coForm" novalidate>
+      <div class="field"><label for="coName">الاسم</label><input class="input" id="coName" maxlength="80" autocomplete="name"></div>
+      <div class="field"><label for="coPhone">رقم الهاتف</label><input class="input num" id="coPhone" inputmode="tel" placeholder="07XXXXXXXXX" style="text-align:right" autocomplete="tel"></div>
+      <div class="grid2"><div class="field"><label for="coCity">المحافظة</label><select class="input" id="coCity">${CITIES.map((c) => `<option>${c}</option>`).join('')}</select></div>
+      <div class="field"><label>التوصيل</label><div class="input" id="coDel"></div></div></div>
+      <div class="field"><label for="coAddr">العنوان</label><input class="input" id="coAddr" maxlength="200" placeholder="المنطقة، أقرب نقطة دالة"></div>
+      <div class="tot grand"><span>الدفع عند الاستلام</span><span id="coTotal"></span></div>
+      <div id="coErr" class="err" hidden></div>
+      <button class="btn primary block" type="submit" style="margin-top:12px">إرسال الطلب</button>
+    </form>`,
+  (sh) => {
+    const fee = () => (sh.querySelector('#coCity').value === 'بغداد' ? 5000 : 6000);
+    const sum = () => cart.reduce((t, l) => t + findVariant(s, l.variantId).v.price * l.qty, 0);
+    const upd = () => { sh.querySelector('#coDel').innerHTML = money(fee()); sh.querySelector('#coTotal').innerHTML = money(sum() + fee()); };
+    upd();
+    sh.querySelector('#coCity').addEventListener('change', upd);
+    $$('[data-cr]', sh).forEach((b) => b.addEventListener('click', () => { cart.splice(+b.dataset.cr, 1); drawCart(); if (cart.length) checkoutSheet(); else closeSheet(); }));
+    sh.querySelector('#coForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = sh.querySelector('#coName').value.trim(), phone = sh.querySelector('#coPhone').value, address = sh.querySelector('#coAddr').value.trim();
+      const errEl = sh.querySelector('#coErr');
+      let err = '';
+      if (!name) err = 'اكتب اسمك';
+      else if (!validPhone(phone)) err = 'رقم الهاتف يجب أن يكون 11 رقماً ويبدأ بـ 07';
+      else if (!address) err = 'اكتب العنوان';
+      if (err) { errEl.textContent = err; errEl.hidden = false; return; }
+      // The server recalculates prices from the database; the client never sends prices.
+      const items = cart.map((l) => { const { p, v } = findVariant(s, l.variantId); return { productId: p.id, variantId: v.id, name: p.name, label: v.label, price: v.price, cost: v.cost, qty: l.qty }; });
+      const o = createOrder(s, { customer: { name, phone: normPhone(phone), city: sh.querySelector('#coCity').value, address }, items, discount: 0, delivery: fee() }, 'storefront', 'الزبون');
+      cart = []; drawCart();
+      openSheet(`${sheetHead('وصل طلبك')}<p>رقم طلبك <b class="num">#${o.no}</b>. سيتصل بك المتجر لتأكيد الطلب.</p>
+        <p class="sub">احتفظ برقم الطلب لتتبّعه من أسفل الصفحة. ارجع للوحة التحكم لترى الطلب في قائمة "جديد".</p>
+        <button class="btn primary block" type="button" data-act="close-sheet">تم</button>`);
+    });
+  });
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener('click', (e) => {
+  const t = e.target.closest('button, [data-act]');
+  if (!t) return;
+  if (t.dataset.tab) { authTab = t.dataset.tab; renderAuth(); window.scrollTo(0, 0); return; }
+  if (t.dataset.nav) { closeSheet(); go(t.dataset.nav); return; }
+  if (t.dataset.filter) {
+    state.orderFilter = t.dataset.filter; state.q = '';
+    if (state.view !== 'orders') { state.view = 'orders'; }
+    save(); render(); return;
+  }
+  if (t.dataset.order) { orderSheet(t.dataset.order); return; }
+  if (t.dataset.product && !t.closest('#storefront')) { productSheet(t.dataset.product); return; }
+  if (t.dataset.customer) { customerSheet(t.dataset.customer); return; }
+  if (t.dataset.sfp) { sfProductSheet(t.dataset.sfp); return; }
+  switch (t.dataset.act) {
+    case 'close-sheet': closeSheet(); break;
+    case 'new-order': newOrderSheet(); break;
+    case 'new-product': productSheet(null); break;
+    case 'new-expense': expenseSheet(); break;
+    case 'open-storefront': openStorefront(); break;
+    case 'logout': signOut(); break;
+    case 'copy-link': { const ls = sfStore || store(); if (ls) copyText(publicLink(ls)).then((ok) => toast(ok ? 'نُسخ رابط المتجر، أرسله لزبائنك' : 'تعذّر النسخ', !ok)); break; }
+    case 'share-link': { const ls = sfStore || store(); if (ls) shareLink(ls); break; }
+    case 'remove-logo': { const ls = store(); if (ls && ls.logo) { imgDel([ls.logo]); ls.logo = null; save(); render(); toast('حُذف الشعار'); } break; }
+    case 'close-storefront': closeStorefront(); break;
+    case 'checkout': checkoutSheet(); break;
+    case 'reset-demo':
+      confirmSheet('إعادة البيانات التجريبية', 'ستُحذف كل التغييرات التي أجريتها وتعود البيانات كما كانت.', 'إعادة البيانات', true).then((ok) => {
+        if (!ok) return;
+        try { localStorage.removeItem(KEY); } catch (err) { /* ignore */ }
+        imgClearAll();
+        seedState().then((s) => { state = s; save(); authTab = 'login'; renderAuth(); toast('أُعيدت البيانات التجريبية'); });
+      });
+      break;
+    default: break;
+  }
+});
+
+$('#scrim').addEventListener('click', closeSheet);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#sheet').classList.contains('open')) closeSheet(); });
+
+$('#roleSelect').addEventListener('change', (e) => {
+  state.role = e.target.value;
+  save(); render(); toast(`تعرض الآن كـ ${ROLES[state.role].l}`);
+});
+
+// Search inputs: re-render the list but keep focus and caret in the box.
+document.addEventListener('input', (e) => {
+  const id = e.target.id;
+  if (!['q', 'pq', 'cq'].includes(id)) return;
+  state[id] = e.target.value;
+  const pos = e.target.selectionStart;
+  render();
+  const el = document.getElementById(id);
+  if (el) { el.focus(); try { el.setSelectionRange(pos, pos); } catch (err) { /* type=search */ } }
+});
+document.addEventListener('change', async (e) => {
+  if (e.target.id === 'monthSel') { state.month = e.target.value; save(); render(); }
+  if (e.target.id === 'logoFile' && e.target.files.length) {
+    const s = store();
+    toast('جارِ تجهيز الشعار…');
+    const { ids } = await addImages(e.target.files, 1, 400);
+    if (!ids.length) { toast('تعذّر قراءة الصورة، جرّب صورة أخرى', true); return; }
+    if (s.logo) imgDel([s.logo]);
+    s.logo = ids[0];
+    save(); render(); toast('حُفظ الشعار');
+  }
+});
+document.addEventListener('submit', (e) => {
+  if (e.target.id !== 'settingsForm') return;
+  e.preventDefault();
+  const s = store();
+  const name = $('#setName').value.trim();
+  const phone = $('#setPhone').value.trim();
+  const errEl = $('#setErr');
+  if (!name) { errEl.textContent = 'اكتب اسم المتجر'; errEl.hidden = false; return; }
+  if (phone && !validPhone(phone)) { errEl.textContent = 'رقم الهاتف يجب أن يكون 11 رقماً ويبدأ بـ 07'; errEl.hidden = false; return; }
+  const slug = $('#setSlug').value.trim().toLowerCase();
+  if (!/^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/.test(slug)) { errEl.textContent = 'اسم الرابط من 3 إلى 40 حرفاً إنجليزياً صغيراً أو رقماً أو شرطة، ولا يبدأ أو ينتهي بشرطة'; errEl.hidden = false; return; }
+  if (RESERVED.has(slug) || state.stores.some((x) => x.slug === slug && x.id !== s.id)) { errEl.textContent = 'اسم الرابط مستخدم، اختر اسماً آخر'; errEl.hidden = false; return; }
+  s.slug = slug;
+  s.name = name; s.tagline = $('#setTag').value.trim(); s.phone = phone ? normPhone(phone) : ''; s.color = $('#setColor').value;
+  save(); render(); toast('حُفظت التغييرات');
+});
+
+window.addEventListener('hashchange', () => { if (!routePublic() && $('#storefront').classList.contains('open') && sfPublic) closeStorefront(); });
+load().then(() => {
+  render();
+  routePublic();
+});
+</script>
+</body>
+</html>
